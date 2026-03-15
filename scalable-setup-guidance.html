@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scalable Setup Guidance — Sarah LeCroy</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="auth.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,700&family=Libre+Franklin:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:     #FCF3ED;
+      --ink:    #1C1C1A;
+      --muted:  rgba(28, 28, 26, 0.42);
+      --dim:    rgba(28, 28, 26, 0.22);
+      --border: rgba(28, 28, 26, 0.10);
+      --dark:   #141412;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      padding: 32px 0;
+      animation: fade-in 0.9s ease 0.1s both;
+    }
+    .nav-wrap {
+      width: 100%;
+      max-width: 1660px;
+      padding: 0 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 14.5px;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      color: rgba(28, 28, 26, 0.85);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.scrolled .nav-logo { opacity: 0; pointer-events: none; }
+    .nav-bolt { font-size: 12px; filter: brightness(0); }
+    .nav-links { list-style: none; display: flex; gap: 40px; }
+    .nav-links a {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.55;
+      letter-spacing: -0.01em;
+      transition: opacity 0.22s ease;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    .hero { padding: 180px 0 96px; border-bottom: 1px solid var(--border); }
+    .section { padding: 96px 0; border-bottom: 1px solid var(--border); }
+    .section--dark { background: var(--dark); border-bottom: none; }
+    .inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 56px; }
+
+    .eyebrow {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.38;
+      margin-bottom: 20px;
+    }
+    .eyebrow--light { color: rgba(255,255,255,0.36); opacity: 1; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.38;
+      text-decoration: none;
+      margin-bottom: 56px;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 0.75; }
+
+    .hero-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(44px, 6vw, 76px);
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 40px;
+      max-width: 760px;
+    }
+    .hero-headline .dim { opacity: 0.32; }
+
+    .hero-lede {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.72;
+      color: var(--ink);
+      opacity: 0.88;
+      max-width: 780px;
+      letter-spacing: -0.005em;
+    }
+    .hero-lede strong { font-weight: 400; color: var(--ink); opacity: 1; }
+
+    /* Stat rail */
+    .stat-rail { background: var(--dark); }
+    .stat-rail-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 56px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat {
+      padding: 48px 36px 44px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.22s;
+    }
+    .stat:last-child { border-right: none; }
+    .stat:hover { background: rgba(255,255,255,0.03); }
+    .stat-num {
+      display: block;
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(40px, 5vw, 60px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* Role */
+    .role-grid { display: grid; grid-template-columns: 220px 1fr; gap: 56px; align-items: start; }
+    .role-label {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      opacity: 0.26;
+      line-height: 1.3;
+    }
+    .role-items { list-style: none; }
+    .role-items li {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+      opacity: 0.75;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .role-items li:first-child { border-top: 1px solid var(--border); }
+    .role-items li::before { content: "\2197"; font-family: inherit; font-size: 11px; opacity: 0.4; flex-shrink: 0; }
+
+    /* Phase header */
+    .phase-wrap {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 28px;
+      align-items: start;
+      margin-bottom: 48px;
+    }
+    .phase-wrap--full { display: block; margin-bottom: 48px; }
+    .phase-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 72px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      opacity: 0.10;
+      user-select: none;
+    }
+    .phase-num--light { color: rgba(255,255,255,0.10); opacity: 1; }
+    .phase-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.16;
+      letter-spacing: -0.022em;
+      color: var(--ink);
+      margin-bottom: 0;
+    }
+    .phase-title--light { color: #fff; }
+    .phase-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: 0.52;
+      letter-spacing: -0.005em;
+      margin-top: 16px;
+      display: block;
+    }
+    .phase-sub--light { color: rgba(255,255,255,0.45); opacity: 1; }
+
+    /* Body copy */
+    .body-copy {
+      font-size: 16px;
+      font-weight: 200;
+      line-height: 1.82;
+      color: var(--ink);
+      opacity: 0.88;
+      max-width: 780px;
+      letter-spacing: -0.005em;
+      margin-bottom: 40px;
+    }
+    .body-copy--light { color: rgba(255,255,255,0.65); opacity: 1; }
+    .body-copy strong { font-weight: 400; color: var(--ink); }
+    .body-copy--light strong { color: rgba(255,255,255,0.88); }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 1px solid var(--ink);
+      padding: 4px 0 4px 28px;
+      margin: 52px 0;
+      max-width: 780px;
+    }
+    .pull-quote--light { border-color: rgba(255,255,255,0.2); }
+    .pull-quote p {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(19px, 2.2vw, 25px);
+      line-height: 1.42;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+    }
+    .pull-quote--light p { color: rgba(255,255,255,0.65); }
+
+    /* Image placeholder */
+    .img-placeholder {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 48px 0;
+      background: rgba(28,28,26,0.03);
+    }
+    .img-placeholder-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 64px 48px;
+      text-align: center;
+    }
+    .img-placeholder-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.3;
+    }
+    .img-placeholder-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: 0.45;
+      max-width: 480px;
+      line-height: 1.6;
+      letter-spacing: -0.005em;
+    }
+    .img-placeholder-icon {
+      font-size: 28px;
+      opacity: 0.18;
+      margin-bottom: 4px;
+    }
+
+    /* Two-up image grid */
+    .img-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 48px 0;
+    }
+    .img-grid-2 .img-placeholder { margin: 0; }
+    .img-grid-2 .img-placeholder-inner { padding: 48px 32px; }
+
+    /* Three-up image grid */
+    .img-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 48px 0;
+    }
+    .img-grid-3 .img-placeholder { margin: 0; }
+    .img-grid-3 .img-placeholder-inner { padding: 40px 24px; }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 12px;
+      row-gap: 24px;
+      align-items: start;
+    }
+
+    /* Results */
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .stat-rail .results-header::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.14); }
+    .results-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .stat-rail .results-header .eyebrow { color: rgba(255,255,255,0.75); }
+    .results-title {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      letter-spacing: 0.18em;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .results-pane { background: var(--bg); padding: 48px; }
+    .results-pane .metric-val { font-size: 30px; font-weight: 500; }
+    .results-pane--dark { background: var(--ink); }
+    .results-pane-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 24px;
+    }
+    .results-pane--dark .results-pane-label { color: rgba(255,255,255,0.28); opacity: 1; }
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .metric:last-child { border-bottom: none; }
+    .results-pane--dark .metric { border-color: rgba(255,255,255,0.06); }
+    .metric-name {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink);
+      opacity: 0.62;
+      letter-spacing: -0.005em;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .results-pane--dark .metric-name { color: rgba(255,255,255,0.55); opacity: 1; }
+    .metric-val {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 24px;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .results-pane--dark .metric-val { color: rgba(255,255,255,0.82); }
+
+    /* Design decisions */
+    .decisions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .decision { padding: 36px; background: var(--dark); transition: background 0.22s; }
+    .decision:hover { background: rgba(255,255,255,0.015); }
+    .decision-idx {
+      display: block;
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 42px;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.22);
+      line-height: 1;
+      margin-bottom: 22px;
+    }
+    .decision-heading {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      margin-bottom: 12px;
+    }
+    .decision-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.72;
+      color: rgba(255,255,255,0.52);
+      letter-spacing: -0.005em;
+    }
+
+    /* Strategy cards */
+    .strategy-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px 28px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .strategy-card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+    .strategy-icon {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 42px;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.22);
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .strategy-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .strategy-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.8);
+      margin: 0;
+    }
+
+    /* Goal highlight */
+    .goal-highlight {
+      background: linear-gradient(135deg, rgba(180,85,75,0.1) 0%, rgba(180,85,75,0.05) 100%);
+      border: 1px solid rgba(180,85,75,0.2);
+      border-radius: 20px;
+      padding: 40px;
+    }
+    .goal-content {
+      text-align: center;
+    }
+    .goal-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.015em;
+    }
+    .goal-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.9);
+      margin: 0;
+    }
+
+    /* Vision block */
+    .vision-block { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 48px; }
+    .vision-top { padding: 48px; background: rgba(28,28,26,0.03); border-bottom: 1px solid var(--border); }
+    .vision-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(26px, 3.2vw, 38px);
+      letter-spacing: -0.022em;
+      line-height: 1.14;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .vision-body {
+      font-size: 15px;
+      font-weight: 200;
+      line-height: 1.78;
+      color: var(--ink);
+      opacity: 0.75;
+      max-width: 100%;
+    }
+    .vision-features { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .vision-feature { padding: 32px 36px; border-right: 1px solid var(--border); }
+    .vision-feature:last-child { border-right: none; }
+    .vision-feature-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 10px;
+    }
+    .vision-feature-text { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink); opacity: 0.72; }
+
+    /* Key findings */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .finding {
+      background: var(--bg);
+      padding: 32px 36px;
+      border-bottom: 1px solid var(--border);
+    }
+    .finding:nth-last-child(-n+2) { border-bottom: none; }
+    .finding-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .finding-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--ink);
+      opacity: 0.72;
+    }
+    .finding-text strong { font-weight: 400; opacity: 1; color: var(--ink); }
+
+    /* Reflections */
+    .reflections-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--ink);
+      max-width: 500px;
+      margin-bottom: 48px;
+    }
+    .reflection {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 56px;
+      align-items: start;
+      padding: 38px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .reflection:first-of-type { border-top: 1px solid var(--border); }
+    .reflection:last-of-type { border-bottom: none; }
+    .reflection-heading {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 17px;
+      letter-spacing: -0.012em;
+      line-height: 1.38;
+      color: var(--ink);
+    }
+    .reflection-body {
+      font-size: 15px;
+      font-weight: 200;
+      line-height: 1.8;
+      color: var(--ink);
+      opacity: 0.75;
+      letter-spacing: -0.005em;
+    }
+    .reflection-body strong { font-weight: 400; color: var(--ink); opacity: 1; }
+
+    /* Footer */
+    .case-footer { padding: 64px 0; border-top: 1px solid var(--border); }
+    .site-footer { padding: 34px 0; }
+    .site-footer-inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 56px; display: flex; justify-content: space-between; align-items: center; }
+    .site-footer-copy { font-size: 13px; font-weight: 300; color: var(--ink); opacity: 0.55; }
+    .site-footer-links { display: flex; gap: 32px; }
+    .site-footer-links a { font-size: 13px; font-weight: 300; color: var(--ink); opacity: 0.55; text-decoration: none; }
+    .site-footer-links a:hover { opacity: 1; }
+    .case-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-ring {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1.5px solid rgba(28,28,26,0.22);
+      border-radius: 100px;
+      padding: 13px 26px;
+      transition: border-color 0.22s, background 0.22s;
+    }
+    .btn-ring:hover { border-color: rgba(28,28,26,0.55); background: rgba(28,28,26,0.04); }
+    .next-label {
+      font-size: 12px;
+      opacity: 0.65;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      transition: opacity 0.22s;
+    }
+    .next-label:hover { opacity: 1; }
+
+    /* Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.07s; }
+    .reveal-d2 { transition-delay: 0.14s; }
+    .reveal-d3 { transition-delay: 0.21s; }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Responsive */
+    @media (max-width: 600px) { nav { padding: 24px 0; } .nav-wrap { padding: 0 28px; } }
+    @media (max-width: 768px) {
+      .nav-wrap { padding: 0 28px; }
+      .inner, .case-footer-inner { padding: 0 28px; }
+      .stat-rail-inner { grid-template-columns: repeat(2, 1fr); padding: 0 28px; }
+      .role-grid { grid-template-columns: 1fr; gap: 24px; }
+      .phase-wrap { grid-template-columns: 52px 1fr; gap: 16px; }
+      .results-grid { grid-template-columns: 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .decisions-grid { grid-template-columns: 1fr; }
+      .vision-features { grid-template-columns: 1fr; }
+      .vision-feature { border-right: none; border-bottom: 1px solid var(--border); }
+      .reflection { grid-template-columns: 1fr; gap: 14px; }
+      .case-footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; }
+      .img-grid-2, .img-grid-3, .design-grid { grid-template-columns: 1fr; }
+      /* Strategy cards responsive */
+      .strategy-card { padding: 24px 20px; }
+      .goal-content { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-wrap">
+      <a href="index.html" class="nav-logo"><span class="nav-bolt">⚡</span> Sarah LeCroy</a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══ HERO ════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="inner">
+      <a href="index.html#work" class="back-link">← All work</a>
+      <p class="eyebrow">Intuit Mailchimp · Onboarding</p>
+      <h1 class="hero-headline">
+        Scalable systems <span class="dim">for setup guidance.</span>
+      </h1>
+      <p class="hero-lede">
+        Experiment data showed that the homepage setup tasks were not driving engagement. I moved over to the homepage space temporarily to help address this issue. What I quickly discovered was that the business had no clear pattern for helping users beyond initial setup.
+        <strong>What started as a project to improve new-user setup became an effort to define a global guidance system that could surface relevant next steps anywhere in Mailchimp, at any point in a user’s journey.
+        </strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ STAT RAIL ═══════════════════════════════════════════ -->
+  <div class="stat-rail" role="region" aria-label="Key impact metrics">
+    <div class="stat-rail-inner">
+      <div class="stat">
+        <span class="stat-num">38%</span>
+        <span class="stat-label">Increase in domain authentications</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">37%</span>
+        <span class="stat-label">Increase in SMS adoption</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">~60K</span>
+        <span class="stat-label">Users per week</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">6+</span>
+        <span class="stat-label">Platform teams coordinated</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ROLE ════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">My role</span>
+      <div class="role-grid">
+        <div class="role-label">Lead Designer</div>
+        <ul class="role-items reveal">
+          <li>Reframed the problem from "guided tour" to "scalable task system," shifting the product strategy for the entire setup space</li>
+          <li>Ran competitive analysis across central SaaS platforms to identify guidance patterns and establish design benchmarks</li>
+          <li>Synthesized three years of existing qualitative research alongside new FullStory behavioral analysis</li>
+          <li>Designed and ran three rounds of usability testing with 8 users, iterating the experience from prototype to MVP</li>
+          <li>Coordinated across 6 platform teams to ensure the tasklist system could scale to surface guidance from any part of the product</li>
+          <li>Presented findings and future vision to C-suite leadership, securing investment for phased rollout</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ REFRAMING THE PROBLEM ═══════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">The problem</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Critical setup tasks were being missed
+        </h2>
+        <p class="phase-sub">The reframe that changed the scope of the project</p>
+      </div>
+
+      <p class="body-copy">
+        <strong>New users were dropping off on critical setup actions</strong> on the homepage such as domain authentication, list imports, and integrations connections.
+        
+
+      <p class="body-copy">
+        These setup tasks directly predict whether a user will send their first email. And <strong>"first send"
+        is the strongest signal for retention and paid conversion.</strong>
+      </p>
+
+      <p class="body-copy">
+        The original brief was focused on a specific surface, a small setup carousel on the homepage. The reframe I brought to the team was that this isn't just a new-user problem. Users at <i>any</i> stage of their Mailchimp
+        journey can fall behind on setup tasks that directly predict whether they'll send their first email,
+        convert to paid, or get enough value to stay. What we needed wasn't a better carousel.
+        <strong>It was a scalable guidance system. Persistent, contextual, and accessible to any user, at any point.</strong>
+      </p>
+
+      <figure class="reveal" style="margin: 48px 0;">
+        <img src="images/scalablesystemsforsetupguidance/Homepage_PreExperiment.webp" alt="The Mailchimp homepage prior to the tasklist experiment" style="width:100%;display:block;border-radius:16px;border:1px solid var(--border);">
+        <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">The Homepage prior to our experiment showing a carousel for setup tasks on the top right.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══ DESIGN PROCESS ══════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Research & analysis</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Gathering data + cross-team research to guide explorations
+        </h2>
+        <p class="phase-sub">Competitive research, user segments, and cross-team alignment</p>
+      </div>
+
+      <p class="body-copy">
+        I started with a competitive analysis across onboarding patterns in SaaS and marketing platforms
+        to understand how other products handled guidance and task discoverability. Because I already owned
+        the account setup space, I could draw on existing knowledge about user segments and business verticals,
+        what data we collected, and which tasks users consistently missed or had low awareness of.
+        <strong>That existing context let me move faster and make stronger recommendations than starting from scratch would have allowed.</strong>
+      </p>
+
+      <p class="body-copy">
+        The cross-team design challenge was equally important. The tasklist needed to surface actions owned by
+        product teams across the platform, not just in setup. To solve this, I created a shared working space
+        where designers from other parts of the product could contribute the actions users needed to take in their
+        areas but that weren't being surfaced anywhere. I also collaborated with Intuit's QuickBooks onboarding
+        team to learn from their approach to personalization and understand how cross-product signals could
+        strengthen task relevance from day one.
+      </p>
+
+      <figure class="reveal" style="margin: 48px 0;">
+        <img src="images/scalablesystemsforsetupguidance/Research.png" alt="Research synthesis for scalable setup guidance" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
+        <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">Screenshot showing a portion of my research journey.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══ MY STRATEGY ════════════════════════════════ -->
+  <section class="section section--dark">
+    <div class="inner">
+      
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title phase-title--light">
+          My Strategy
+        </h2>
+        <p class="phase-sub phase-sub--light">Four principles that guided the system design</p>
+      </div>
+
+      <!-- Strategy principles -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px;">
+        <div class="strategy-card reveal">
+          <div class="strategy-icon">1</div>
+          <h4 class="strategy-title">Scalable System</h4>
+          <p class="strategy-desc">
+            Build reusable patterns, not one-off widgets. Create a framework that grows with the product.
+          </p>
+        </div>
+        <div class="strategy-card reveal">
+          <div class="strategy-icon">2</div>
+          <h4 class="strategy-title">Smart Personalization</h4>
+          <p class="strategy-desc">
+            Use account data to show relevant tasks. Different businesses need different guidance.
+          </p>
+        </div>
+        <div class="strategy-card reveal">
+          <div class="strategy-icon">3</div>
+          <h4 class="strategy-title">Data-Driven Guardrails</h4>
+          <p class="strategy-desc">
+            Protect what works. Let metrics guide changes, not assumptions.
+          </p>
+        </div>
+      </div>
+
+      <!-- Goal section -->
+      <div class="goal-highlight reveal" style="margin-top: 48px;">
+        <div class="goal-content">
+          <div>
+            <h3 class="goal-title">North Star Goal</h3>
+            <p class="goal-desc">
+              Drive 1-3 critical setup completions per user in their first 30 days, boosting retention and long-term success.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="inner">
+      <!-- ── FIGMA EXPLORATIONS ──────────────────────────────── -->
+      <div class="reveal" style="margin: 64px 0 0;">
+
+
+        <!-- 1. Use cases -->
+        <div style="margin-bottom:60px;">
+          <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">Defining the use cases first</h4>
+          <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:24px;max-width:640px;">Before designing anything, I mapped the six business verticals that Mailchimp was using at the time to determine personalization — from e-commerce to civic services, ensuring the tasklist could support users across all major customer segments.</p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 1</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">E-commerce</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 2</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">Professional services</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 3</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">Physical Retail</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 4</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">Consumer services</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 5</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">Civic or social services</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Use case 6</p>
+              <p style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.4;">Media, content or software</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Placement options -->
+        <div style="margin-bottom:60px;">
+          <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">Where should the tasklist live?</h4>
+          <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:24px;max-width:640px;">Placement had downstream implications for discoverability, trust, and how users would relate to the feature long-term — not just at first launch.</p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Option A</p>
+              <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;">Top nav</p>
+              <p style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.75;line-height:1.6;">An icon next to the global Help button. Tasklist appears on click. Visible from anywhere in the product, but competes with other global nav elements for attention.</p>
+              <img src="images/scalablesystemsforsetupguidance/TopNav.png" alt="Top nav" style="width:100%;height:auto;border-radius:8px;margin-top:12px;border:1px solid var(--border);opacity:0.9">
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Option B</p>
+              <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;">Left nav</p>
+              <p style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.75;line-height:1.6;">Positioned directly above the Create/global navigation. Always accessible by one click. Allows the user to have the menu open without having to disrupt their current workflow. </p>
+              <img src="images/scalablesystemsforsetupguidance/LeftNav.png" alt="Notifications panel / right rail" style="width:100%;height:auto;border-radius:8px;margin-top:12px;border:1px solid var(--border);opacity:0.9">
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Option C</p>
+              <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;">Homepage module</p>
+              <p style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.75;line-height:1.6;">A persistent module on the homepage. High visibility for first visits, but not globally accessible. Some may also find a pinned checklist frustrating if they don't intend to complete everything.</p>
+              <img src="images/scalablesystemsforsetupguidance/homepage.png" alt="Homepage module" style="width:100%;height:auto;border-radius:8px;margin-top:12px;border:1px solid var(--border);opacity:0.9">
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Option D</p>
+              <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;">Right rail</p>
+              <p style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.75;line-height:1.6;">A full length sidebar on the right side of the screen. Users may or may not engage - would need compelling copy to encourage usage.</p>
+              <img src="images/scalablesystemsforsetupguidance/RightRail.png" alt="Sticky / left nav" style="width:100%;height:auto;border-radius:8px;margin-top:12px;border:1px solid var(--border);opacity:0.9">
+            </div>
+          </div>
+          <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">Placement options mapped across the product, each with distinct tradeoffs for discoverability and user trust.</figcaption>
+        </div>
+
+        <!-- 3. Naming -->
+        <div style="margin-bottom:60px;">
+          <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">What should we call it?</h4>
+          <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:24px;max-width:640px;">I considered both "fun" branded names and direct, to-the-point options. Something that would be clear but also memorable.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:28px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:16px;">Branded names</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Mailchimp Assistant</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Mailchimp Navigator</li>
+                <li style="font-size:14px;font-weight:500;color:var(--ink);">Freddie Concierge</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Account Assistant</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Growth Guide</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Performance Accelerator</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Mailchimp Manager</li>
+              </ul>
+              <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.48;margin-top:18px;line-height:1.55;">Evoke the product's personality — but may feel abstract or imply AI capability the feature doesn't yet have.</p>
+            </div>
+            <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:28px;">
+              <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:16px;">Direct, to-the-point</p>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Action items</li>
+                <li style="font-size:14px;font-weight:500;color:var(--ink);">Tasklist</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Checklist</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Recommendations</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Personalized Task List</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Smart Suggestions</li>
+                <li style="font-size:14px;font-weight:300;color:var(--ink);opacity:0.65;">Always-on Guidance</li>
+              </ul>
+              <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.48;margin-top:18px;line-height:1.55;">Immediately communicates function — lower learning curve, but may undersell the strategic value of the feature.</p>
+            </div>
+          </div>
+          <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">"Tasklist" was used throughout the project internally. "Freddie Concierge" emerged later as a vision-level concept for what the feature could eventually become.</figcaption>
+        </div>
+
+        <!-- 4. Task anatomy -->
+        <div>
+          <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">Anatomy of a task</h4>
+            <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:28px;max-width:820px;">I explored several approaches for task cards - various text options, an optional image, and clear primary/secondary actions. Some quick actions can be done inline; deeper flows should navigate into the product. Completion could be shown with a checkbox or circle, and small badges can signal category or urgency.</p>
+
+          <div style="border:1px solid var(--border);border-radius:16px;padding:40px 48px;background:rgba(28,28,26,0.02);">
+            <div style="max-width:480px;margin:0 auto;">
+              <!-- Task card mockup -->
+              <div style="border:1.5px solid rgba(180,85,75,0.3);border-radius:12px;padding:22px 24px;background:rgba(180,85,75,0.04);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                  <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(28,28,26,0.22);flex-shrink:0;"></div>
+                  <p style="flex:1;font-size:15px;font-weight:500;color:var(--ink);margin:0;">Title of task</p>
+                  <div style="background:rgba(28,28,26,0.07);border-radius:5px;padding:3px 10px;font-size:11px;font-weight:400;color:var(--ink);opacity:0.5;">Badge</div>
+                </div>
+                <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.42;margin-bottom:6px;padding-left:30px;font-style:italic;">"Here's why we're showing you this"</p>
+                <p style="font-size:13px;font-weight:300;color:var(--ink);opacity:0.5;margin-bottom:14px;padding-left:30px;">Optional description</p>
+                <div style="background:rgba(28,28,26,0.06);border-radius:8px;height:72px;margin-bottom:14px;margin-left:30px;"></div>
+                <div style="display:flex;gap:8px;padding-left:30px;">
+                  <div style="background:rgba(28,28,26,0.07);border-radius:5px;padding:6px 14px;font-size:12px;color:var(--ink);opacity:0.5;">Primary CTA</div>
+                  <div style="border:1px solid rgba(28,28,26,0.12);border-radius:5px;padding:6px 14px;font-size:12px;color:var(--ink);opacity:0.5;">Secondary</div>
+                </div>
+              </div>
+              <!-- Annotation labels -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px;">
+                <div style="background:rgba(28,28,26,0.03);border-radius:8px;padding:14px 16px;">
+                  <p style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Completion indicator</p>
+                  <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.55;margin:0;">Checkbox or radio</p>
+                </div>
+                <div style="background:rgba(28,28,26,0.03);border-radius:8px;padding:14px 16px;">
+                  <p style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Context message</p>
+                  <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.55;margin:0;">Tells users why we recommend this for their business</p>
+                </div>
+                <div style="background:rgba(28,28,26,0.03);border-radius:8px;padding:14px 16px;">
+                  <p style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Optional badge</p>
+                  <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.55;margin:0;">Icon or label for context or urgency</p>
+                </div>
+                <div style="background:rgba(28,28,26,0.03);border-radius:8px;padding:14px 16px;">
+                  <p style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Feature area + CTAs</p>
+                  <p style="font-size:12px;font-weight:300;color:var(--ink);opacity:0.55;margin:0;">Optional image, plus up to 2 actions</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ INITIAL DESIGN EXPLORATIONS ═════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Design explorations</span>
+
+      <div class="phase-wrap--full">
+        <h3 class="phase-title">Initial design explorations</h3>
+        <p class="phase-sub">Placement approaches, component formats, and tradeoffs.</p>
+      </div>
+
+      <p class="body-copy">
+        I explored several placement approaches, a homepage module, icon in the top-nav, left sidebar entry, or right-rail overlay,
+        <strong>evaluating each against discoverability, expected user behavior, and engineering feasibility.</strong> I also compared horizontal
+        card formats (more visual, easy to scan) with vertical list formats (ability to have more dense content) to see which options would work best for different scenarios.
+      </p>
+
+      <div class="reveal" style="margin-top:24px;">
+        <div class="design-grid">
+          <div style="text-align:left;">
+            <img src="images/scalablesystemsforsetupguidance/wire_designs/topnav_wire.webp" alt="Top nav placement" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+            <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;">Top nav</p>
+          </div>
+          <div style="text-align:left;">
+            <img src="images/scalablesystemsforsetupguidance/wire_designs/leftnav_wire.webp" alt="Left sidebar placement" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+            <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;">Left sidebar</p>
+          </div>
+          <div style="text-align:left;">
+            <img src="images/scalablesystemsforsetupguidance/wire_designs/rightrail_wire.webp" alt="Right rail overlay" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+            <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;">Right rail</p>
+          </div>
+          <div style="text-align:left;">
+            <img src="images/scalablesystemsforsetupguidance/wire_designs/homepage_wire.webp" alt="Homepage module" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+            <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;">Homepage "card" format with horizontal layout</p>
+          </div>
+        </div>
+        <figcaption style="margin-top:24px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">
+          Mid fidelity designs showing each placement and format explored.
+        </figcaption>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ USER TESTING ════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">User testing</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Non-biased user testing
+        </h2>
+        <p class="phase-sub">What testing revealed about attention and intent</p>
+      </div>
+
+      <p class="body-copy">
+        I ran multiple usability tests on 4 of the top design options (narrowed down through regular syncs with my PM and Growth design team members), asking users to "tell us what they would do first" and not hinting at what we were testing.
+        The tests surfaced a critical insight - <strong>users consistently expected the tasklist to be clearly visible and not buried or hidden behind an icon.</strong> 
+      </p>
+
+      <p class="body-copy">
+        Testing also revealed that completion messaging mattered more than we expected. Users who saw a
+        progress indicator were measurably more likely to return and complete a second task within the
+        same session. That finding directly shaped the MVP's visual design.
+      </p>
+
+      <!-- User testing images -->
+      <div style="display:grid; grid-template-columns: repeat(2,1fr); column-gap:16px; row-gap:24px; margin:48px 0;">
+        <div>
+          <img src="images/scalablesystemsforsetupguidance/usertesting/topnav_usertesting.webp" alt="Top nav user testing" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+          <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;line-height:1.5;">Users had a hard time finding this option from the icon in the top nav</p>
+        </div>
+        <div>
+          <img src="images/scalablesystemsforsetupguidance/usertesting/leftnav_usertesting.webp" alt="Left nav user testing" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+          <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;line-height:1.5;">Users engaged more with this option vs. the top nav option, but didn't like that it still felt hidden</p>
+        </div>
+        <div>
+          <img src="images/scalablesystemsforsetupguidance/usertesting/homepage_horizontal.webp" alt="Homepage horizontal user testing" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+          <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;line-height:1.5;">This option, built into the homepage, was by far the version most users wanted to engage with. With the caveat that it shouldn't be this low on the page.</p>
+        </div>
+        <div>
+          <img src="images/scalablesystemsforsetupguidance/usertesting/homepage_vertical.webp" alt="Homepage vertical user testing" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
+          <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;line-height:1.5;">Users also liked this option but were more drawn to the card format.</p>
+        </div>
+      </div>
+
+      <!-- ══ KEY DESIGN DECISIONS ════════════════════════════════ -->
+    </div>
+  </section>
+
+  <!-- ══ MVP + RESULTS ═══════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">experiment</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          MVP launch and results
+        </h2>
+        <p class="phase-sub">Controlled experiment, held for 30 days post-launch</p>
+      </div>
+
+      <p class="body-copy">
+        After user testing, I moved the tasklist to the top of the homepage to give it the prominence users were asking for. I explored ways to shorten the height to keep the high-performing creation actions (ex: "Top templates for e-commerce") above the fold.
+      </p>
+
+      <p class="body-copy">
+        The MVP targeted users in their first 30 days and surfaced the tasklist as a persistent module on the homepage dashboard. The tasklist contained 5-6 personalized tasks based on the user's industry and account data, with a progress indicator to encourage completion.
+      </p>
+
+      <figure class="reveal" style="margin:48px 0;">
+        <img src="images/scalablesystemsforsetupguidance/mvp/02_almostthere.webp" alt="MVP chosen design balancing creation actions and personalization" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
+        <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">MVP chosen design balancing the importance of creation actions below, personalization for our user segments, user feedback and engineering feasibility.</figcaption>
+      </figure>
+
+        <!-- Cross-Team Systems Complexity (quick scan) -->
+        <div class="reveal" style="margin:48px 0 0;">
+          <h3 style="font-size:18px;font-weight:600;color:var(--ink);margin:0 0 6px;">Cross-team systems complexity</h3>
+          <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.72;margin:0 0 16px;line-height:1.6;">To enable this work, I collaborated with 6+ teams across Mailchimp to ensure alignment on validation, completion logic, appropriate tasks and consistency with copy. I built a flexible component library that would flex for other use cases.</p>
+          <figure style="margin:0;">
+            <img src="images/scalablesystemsforsetupguidance/mvp/component_variations.png" alt="Cross-team systems complexity: component variations" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
+            <figcaption style="margin-top:10px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">
+              Compnent library with variations for each use case.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- Engineering Handoff & Extensibility (quick scan) -->
+        <div class="reveal" style="margin:48px 0 0;">
+          <h3 style="font-size:18px;font-weight:600;color:var(--ink);margin:0 0 6px;">Engineering handoff &amp; extensibility</h3>
+          <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.72;margin:0 0 16px;line-height:1.6;">I provided concise specs for edge cases and future-proofing, making it easy for any team to plug into the system.</p>
+          <figure style="margin:0;">
+            <img src="images/scalablesystemsforsetupguidance/mvp/spec_sheet.png" alt="Engineering handoff and extensibility: spec sheet" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
+            <figcaption style="margin-top:10px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">
+              Spec sheet provided to engineering to ensure smooth handoff and clear guidelines for future extensibility.
+            </figcaption>
+          </figure>
+        </div>
+    </div>
+  </section>
+
+  <!-- ══ RESULTS ═══════════════════════════════════════════════ -->
+  <section class="section section--dark">
+    <div class="inner">
+      <div class="stat-rail reveal" role="region" aria-label="Results metrics">
+        <div class="results-header" style="margin: 48px 0 24px;">
+          <span class="eyebrow results-title" style="margin-bottom:0;color:rgb(225, 225, 225);">Results</span>
+        </div>
+        <div class="stat-rail-inner" style="border-left:none;">
+          <div class="stat">
+            <span class="stat-num">+37%</span>
+            <span class="stat-label">SMS adoption</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">+38%</span>
+            <span class="stat-label">Domain authentication completions</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">+15%</span>
+            <span class="stat-label">List import completions</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">✔</span>
+            <span class="stat-label">Payoff actions weren’t negatively impacted</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCALING: AUTOMATIONS ════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Scaling the system</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          The same infrastructure, extended to Automations.
+        </h2>
+        <p class="phase-sub">From setup to the full product lifecycle</p>
+      </div>
+
+      <p class="body-copy">
+        Once the tasklist system proved its value in setup, the natural next step was extending it
+        to Automations, where users faced a similar problem: high-value actions buried behind
+        discovery friction. The content model we had built was already designed for this.
+        <strong>Adding Automations guidance required no new infrastructure, only new tasks.</strong>
+        That was the point.
+      s
+
+      <p class="body-copy">
+        This expansion validated the core architectural decision: designing a shared content model
+        across platform teams meant the system could grow without growing the design and engineering
+        investment proportionally. Each new area the tasklist entered cost less than the one before it.
+      </p>
+
+      <figure class="reveal" style="margin: 48px 0;">
+        <img src="images/scalablesystemsforsetupguidance/Automations_web.webp" alt="Tasklist scaled to Automations" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
+      </figure>
+
+      <div class="vision-block reveal">
+        <div class="vision-top">
+          <h3 class="vision-headline">One system. Any part of the product.</h3>
+          <p class="vision-body">
+            The tasklist didn't just scale to Automations. It established the pattern for how
+            Mailchimp surfaces contextual guidance across the platform. Any team that wants to
+            help users onboard now has a channel to do it, without building
+            something new.
+          </p>
+        </div>
+        
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FUTURE VISION ════════════════════ -->
+  <section class="section section--dark">
+    <div class="inner">
+      <span class="eyebrow eyebrow--light">Future vision</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title phase-title--light">
+          Looking ahead
+        </h2>
+        <p class="phase-sub phase-sub--light">Evolving from a setup module into a persistent, AI-powered contextual assistant</p>
+      </div>
+
+      <p class="body-copy body-copy--light">
+        My long-term vision was to evolve this from an in-page module into a global, persistent assistant
+        that uses business profile data to surface the right task at the right time, anywhere in the
+        product, not just during new onboarding. <strong>What excited me most was the ability for AI to surface highly personalized tasks based on the robust business profile data we had gathered about a business.</strong>
+      </p>
+
+      <p class="body-copy body-copy--light">
+        It could personalize recommendations using the user's business vertical, website/branding,
+        the time of year, audience data, and more. Imagine that a veterinary practice in Spring could get flea and tick
+        seasonal campaign prompts. A boutique with a lapsed audience gets a re-engagement workflow.
+        <strong>The product stops being a tool users have to learn and starts being a partner that already
+        understands their business.</strong>
+      </p>
+
+      <figure class="reveal" style="margin: 48px 0;">
+        <img src="images/scalablesystemsforsetupguidance/FutureState_web.webp" alt="Freddie Concierge future state vision" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid rgba(255,255,255,0.1);">
+      </figure>
+
+      
+    
+      <div class="pull-quote pull-quote--light reveal" style="margin-top: 56px;">
+        <p>"The product stops being a tool users have to learn and starts being a partner that already understands their business."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ REFLECTIONS ═════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Reflections</span>
+      <h2 class="reflections-headline">What this project taught me.</h2>
+
+      <div>
+        <div class="reflection reveal">
+          <h3 class="reflection-heading">The reframe was the work</h3>
+          <p class="reflection-body">
+            The original brief was to improve a setup carousel. The most impactful thing I did on this project
+            was expand the scope to build a scalable guidance system.
+          
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d1">
+          <h3 class="reflection-heading">Designing for scale means designing for other teams</h3>
+          <p class="reflection-body">
+            Coordinating across 6+ platform teams wasn't a process overhead — it was core to the design.
+            <strong>The shared content model and flexible component library I built meant that when
+            the system expanded to Automations, it required no new infrastructure.</strong> That architectural
+            decision was also a design decision: the more extensible the system, the more users it could
+            eventually reach without proportional cost.
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d2">
+          <h3 class="reflection-heading">Non-biased testing surfaces what reviews miss</h3>
+          <p class="reflection-body">
+            By asking users "tell us what you'd do first" without hinting at what we were testing,
+            we learned things a design review never would have caught. <strong>Users consistently wanted to see the setup tasks front and center,</strong> directly shaping the MVP's visual design in ways that contributed to
+            engagement in the experiment.
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d3">
+          <h3 class="reflection-heading">The architecture decision is the long-term value</h3>
+          <p class="reflection-body">
+            The results — +38% domain authentication, +37% SMS adoption, +15% list imports — validated
+            the MVP. But <strong>the more durable win was a system any product team could plug into
+            without starting from scratch.</strong> Designing for that future was a bigger contribution
+            than any single screen.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════ -->
+  <footer class="case-footer">
+    <div class="case-footer-inner">
+      <a href="index.html#work" class="btn-ring">← All work</a>
+      <a href="#" class="next-label">Next case study →</a>
+    </div>
+  </footer>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span class="site-footer-copy">Sarah LeCroy © 2026</span>
+      <div class="site-footer-links">
+        <a href="mailto:sarahklecroy@gmail.com">sarahklecroy@gmail.com</a>
+        <a href="https://www.linkedin.com/in/sarahlecroy/" target="_blank" rel="noopener">linkedin.com/in/sarahlecroy/</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => {
+      document.body.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+  </script>
+
+</body>
+</html>

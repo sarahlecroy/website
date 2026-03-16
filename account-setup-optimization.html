@@ -62,6 +62,7 @@
       justify-content: center;
       padding: 32px 0;
       animation: fade-in 0.9s ease 0.1s both;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
     .nav-wrap {
       width: 100%;
@@ -685,22 +686,86 @@
       border: 1px solid var(--border);
     }
 
+    /* ── Hamburger + mobile menu ── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5.5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 210;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform 0.28s ease, opacity 0.28s ease;
+    }
+    body.menu-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    body.menu-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    body.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 195;
+      background: var(--bg);
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 28px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-menu-links li {
+      border-bottom: 1px solid rgba(28, 28, 26, 0.10);
+      padding: 20px 0;
+    }
+    .mobile-menu-links li:first-child { border-top: 1px solid rgba(28, 28, 26, 0.10); }
+    .mobile-menu-links a {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(42px, 11vw, 60px);
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.82;
+      transition: opacity 0.2s ease;
+      line-height: 1.15;
+    }
+    .mobile-menu-links a:hover { opacity: 1; }
+
     /* Responsive */
     @media (max-width: 768px) {
       .nav-wrap { padding: 0 28px; }
-      .inner, .case-footer-inner, .site-footer-inner { padding: 0 28px; }
+      .inner, .case-footer-inner, .site-footer-inner { padding: 0 24px; }
       .stat-rail-inner { grid-template-columns: repeat(2, 1fr); padding: 0 28px; }
       .role-grid { grid-template-columns: 1fr; gap: 24px; }
       .phase-wrap { grid-template-columns: 52px 1fr; gap: 16px; }
+      .phase-num { font-size: 40px; }
       .results-grid, .compare-grid { grid-template-columns: 1fr; }
       .decisions-grid, .decisions-grid--2col { grid-template-columns: 1fr; }
       .vision-features { grid-template-columns: 1fr; }
       .vision-feature { border-right: none; border-bottom: 1px solid var(--border); }
       .reflection { grid-template-columns: 1fr; gap: 14px; }
-      .case-footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; }
+      .case-footer-inner { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+      .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
       .img-grid-2, .img-grid-3 { grid-template-columns: 1fr; }
       .redesign-hero, .redesign-grid { grid-template-columns: repeat(2, 1fr); }
       .insight-callout { padding: 32px 24px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      nav.nav-hidden { opacity: 0; transform: translateY(-12px); pointer-events: none; }
     }
     @media (max-width: 600px) { nav { padding: 24px 0; } .nav-wrap { padding: 0 28px; } .redesign-hero, .redesign-grid { grid-template-columns: 1fr; } }
   </style>
@@ -715,8 +780,20 @@
         <li><a href="index.html#work">Work</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
+      <button class="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
 
   <!-- ══ HERO ════════════════════════════════════════════════ -->
   <section class="hero">
@@ -1150,6 +1227,38 @@
     window.addEventListener('scroll', () => {
       document.body.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
+
+    // Hamburger menu
+    const hamburger = document.querySelector('.nav-hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    // Hide nav on mobile when scrolling down
+    (function() {
+      let lastY = window.scrollY;
+      window.addEventListener('scroll', function() {
+        if (window.innerWidth > 768 || document.body.classList.contains('menu-open')) {
+          lastY = window.scrollY;
+          return;
+        }
+        const nav = document.querySelector('nav');
+        if (window.scrollY > lastY && window.scrollY > 60) {
+          nav.classList.add('nav-hidden');
+        } else {
+          nav.classList.remove('nav-hidden');
+        }
+        lastY = window.scrollY;
+      }, { passive: true });
+    })();
   </script>
 
 </body>

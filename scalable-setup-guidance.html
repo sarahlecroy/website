@@ -33,7 +33,7 @@
       --dark:   #141412;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       background: var(--bg);
@@ -775,8 +775,10 @@
     @media (max-width: 600px) { nav { padding: 24px 0; } .nav-wrap { padding: 0 28px; } }
     @media (max-width: 768px) {
       .nav-wrap { padding: 0 28px; }
+      .hero { padding-top: 100px; }
+      .hero-headline { font-size: 40px; }
       .inner, .case-footer-inner, .site-footer-inner { padding: 0 24px; }
-      .stat-rail-inner { grid-template-columns: repeat(2, 1fr); padding: 0 28px; }
+      .stat-rail-inner { grid-template-columns: repeat(2, 1fr); padding: 0; }
       .role-grid { grid-template-columns: 1fr; gap: 24px; }
       .phase-wrap { grid-template-columns: 52px 1fr; gap: 16px; }
       .phase-num { font-size: 40px; }
@@ -788,13 +790,19 @@
       .reflection { grid-template-columns: 1fr; gap: 14px; }
       .case-footer-inner { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
       .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .site-footer-links { flex-direction: column; gap: 6px; }
       .img-grid-2, .img-grid-3, .design-grid { grid-template-columns: 1fr; }
       /* Strategy cards responsive */
+      .strategy-grid { grid-template-columns: 1fr !important; }
       .strategy-card { padding: 24px 20px; }
       .goal-content { text-align: center; }
+      /* Inline grids → single column */
+      .placement-grid, .naming-grid, .testing-grid { grid-template-columns: 1fr !important; }
+      /* Anatomy box - reduce padding */
+      .anatomy-box { padding: 24px 16px !important; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
-      nav.nav-hidden { opacity: 0; transform: translateY(-12px); pointer-events: none; }
+      nav.nav-hidden { opacity: 0; transform: translateY(-100%); pointer-events: none; }
     }
   </style>
 </head>
@@ -964,7 +972,7 @@
       </div>
 
       <!-- Strategy principles -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px;">
+      <div class="strategy-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px;">
         <div class="strategy-card reveal">
           <div class="strategy-icon">1</div>
           <h4 class="strategy-title">Scalable System</h4>
@@ -1007,7 +1015,7 @@
   <section class="section">
     <div class="inner">
       <!-- ── FIGMA EXPLORATIONS ──────────────────────────────── -->
-      <div class="reveal" style="margin: 64px 0 0;">
+      <div class="reveal" style="margin: 0;">
 
 
         <!-- 1. Use cases -->
@@ -1046,7 +1054,7 @@
         <div style="margin-bottom:60px;">
           <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">Where should the tasklist live?</h4>
           <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:24px;max-width:640px;">Placement had downstream implications for discoverability, trust, and how users would relate to the feature long-term — not just at first launch.</p>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+          <div class="placement-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
             <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:24px;">
               <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:8px;">Option A</p>
               <p style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;">Top nav</p>
@@ -1079,7 +1087,7 @@
         <div style="margin-bottom:60px;">
           <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">What should we call it?</h4>
           <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:24px;max-width:640px;">I considered both "fun" branded names and direct, to-the-point options. Something that would be clear but also memorable.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="naming-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div style="background:rgba(28,28,26,0.03);border:1px solid var(--border);border-radius:12px;padding:28px;">
               <p style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.38;margin-bottom:16px;">Branded names</p>
               <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
@@ -1115,7 +1123,7 @@
           <h4 style="font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--ink);margin-bottom:8px;">Anatomy of a task</h4>
             <p style="font-size:15px;font-weight:300;color:var(--ink);opacity:0.88;line-height:1.65;margin-bottom:28px;max-width:820px;">I explored several approaches for task cards - various text options, an optional image, and clear primary/secondary actions. Some quick actions can be done inline; deeper flows should navigate into the product. Completion could be shown with a checkbox or circle, and small badges can signal category or urgency.</p>
 
-          <div style="border:1px solid var(--border);border-radius:16px;padding:40px 48px;background:rgba(28,28,26,0.02);">
+          <div class="anatomy-box" style="border:1px solid var(--border);border-radius:16px;padding:40px 48px;background:rgba(28,28,26,0.02);">
             <div style="max-width:480px;margin:0 auto;">
               <!-- Task card mockup -->
               <div style="border:1.5px solid rgba(180,85,75,0.3);border-radius:12px;padding:22px 24px;background:rgba(180,85,75,0.04);">
@@ -1226,7 +1234,7 @@
       </p>
 
       <!-- User testing images -->
-      <div style="display:grid; grid-template-columns: repeat(2,1fr); column-gap:16px; row-gap:24px; margin:48px 0;">
+      <div class="testing-grid" style="display:grid; grid-template-columns: repeat(2,1fr); column-gap:16px; row-gap:24px; margin:48px 0;">
         <div>
           <img src="images/scalablesystemsforsetupguidance/usertesting/topnav_usertesting.webp" alt="Top nav user testing" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border);">
           <p style="font-size:13px;font-weight:500;color:var(--ink);opacity:0.75;margin-top:8px;line-height:1.5;">Users had a hard time finding this option from the icon in the top nav</p>

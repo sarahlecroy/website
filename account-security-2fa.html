@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Begin Inspectlet Tracking Code -->
+  <script type="text/javascript">
+  (function() {
+  window.__insp = window.__insp || [];
+  __insp.push(['wid', 796083398]);
+  var ldinsp = function(){
+  if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js?wid=796083398&r=' + Math.floor(new Date().getTime()/3600000); var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
+  setTimeout(ldinsp, 0);
+  })();
+  </script>
+  <!-- End Inspectlet Tracking Code -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modernizing Account Security at Scale · Sarah LeCroy</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="auth.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,700&family=Libre+Franklin:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:     #FCF3ED;
+      --ink:    #1C1C1A;
+      --muted:  rgba(28, 28, 26, 0.42);
+      --dim:    rgba(28, 28, 26, 0.22);
+      --border: rgba(28, 28, 26, 0.10);
+      --dark:   #141412;
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      padding: 32px 0;
+      animation: fade-in 0.9s ease 0.1s both;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .nav-wrap {
+      width: 100%;
+      max-width: 1660px;
+      padding: 0 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 14.5px;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      color: rgba(28, 28, 26, 0.85);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.scrolled .nav-logo { opacity: 0; pointer-events: none; }
+    .nav-bolt { font-size: 12px; filter: brightness(0); }
+    .nav-links { list-style: none; display: flex; gap: 40px; }
+    .nav-links a {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.55;
+      letter-spacing: -0.01em;
+      transition: opacity 0.22s ease;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    .hero { padding: 180px 0 96px; border-bottom: 1px solid var(--border); }
+    .section { padding: 96px 0; border-bottom: 1px solid var(--border); }
+    .section--dark { background: var(--dark); border-bottom: none; }
+    .inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 56px; }
+
+    .eyebrow {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.38;
+      margin-bottom: 20px;
+    }
+    .eyebrow--light { color: rgba(255,255,255,0.36); opacity: 1; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.38;
+      text-decoration: none;
+      margin-bottom: 56px;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 0.75; }
+
+    .hero-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(44px, 6vw, 76px);
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 40px;
+      max-width: 760px;
+    }
+    .hero-headline .dim { opacity: 0.32; }
+
+    .hero-lede {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.72;
+      color: var(--ink);
+      opacity: 0.88;
+      max-width: 780px;
+      letter-spacing: -0.005em;
+    }
+    .hero-lede strong { font-weight: 400; color: var(--ink); opacity: 1; }
+
+    /* Stat rail */
+    .stat-rail { background: var(--dark); }
+    .stat-rail-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 56px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat {
+      padding: 48px 36px 44px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.22s;
+    }
+    .stat:last-child { border-right: none; }
+    .stat:hover { background: rgba(255,255,255,0.03); }
+    .stat-num {
+      display: block;
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(40px, 5vw, 60px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* Role */
+    .role-grid { display: grid; grid-template-columns: 220px 1fr; gap: 56px; align-items: start; }
+    .role-label {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      opacity: 0.26;
+      line-height: 1.3;
+    }
+    .role-items { list-style: none; }
+    .role-items li {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+      opacity: 0.75;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .role-items li:first-child { border-top: 1px solid var(--border); }
+    .role-items li::before { content: "\2197"; font-family: inherit; font-size: 11px; opacity: 0.4; flex-shrink: 0; }
+
+    /* Phase header */
+    .phase-wrap {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 48px;
+    }
+    .phase-wrap--full { display: block; margin-bottom: 48px; }
+    .phase-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 72px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      opacity: 0.10;
+      user-select: none;
+    }
+    .phase-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.16;
+      letter-spacing: -0.022em;
+      color: var(--ink);
+      margin-bottom: 0;
+    }
+    .phase-title--light { color: #fff; }
+    .phase-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: 0.52;
+      letter-spacing: -0.005em;
+      margin-top: 16px;
+      display: block;
+    }
+    .phase-sub--light { color: rgba(255,255,255,0.45); opacity: 1; }
+
+    /* Body copy */
+    .body-copy {
+      font-size: 16px;
+      font-weight: 200;
+      line-height: 1.82;
+      color: var(--ink);
+      opacity: 0.88;
+      max-width: 780px;
+      letter-spacing: -0.005em;
+      margin-bottom: 40px;
+    }
+    .body-copy--light { color: rgba(255,255,255,0.65); opacity: 1; }
+    .body-copy strong { font-weight: 400; color: var(--ink); }
+    .body-copy--light strong { color: rgba(255,255,255,0.88); }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 1px solid var(--ink);
+      padding: 4px 0 4px 28px;
+      margin: 52px 0;
+      max-width: 780px;
+    }
+    .pull-quote--light { border-color: rgba(255,255,255,0.2); }
+    .pull-quote p {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(19px, 2.2vw, 25px);
+      line-height: 1.42;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+    }
+    .pull-quote--light p { color: rgba(255,255,255,0.65); }
+
+    /* Image placeholder */
+    .img-placeholder {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 48px 0;
+      background: rgba(28,28,26,0.03);
+    }
+    .img-placeholder-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 64px 48px;
+      text-align: center;
+    }
+    .img-placeholder-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.3;
+    }
+    .img-placeholder-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: 0.45;
+      max-width: 480px;
+      line-height: 1.6;
+      letter-spacing: -0.005em;
+    }
+    .img-placeholder-icon { font-size: 28px; opacity: 0.18; margin-bottom: 4px; }
+
+    /* Two-up and three-up image grids */
+    .img-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 48px 0; }
+    .img-grid-2 .img-placeholder { margin: 0; }
+    .img-grid-2 .img-placeholder-inner { padding: 48px 32px; }
+
+    .img-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 48px 0; }
+    .img-grid-3 .img-placeholder { margin: 0; }
+    .img-grid-3 .img-placeholder-inner { padding: 40px 24px; }
+
+    /* Image with caption */
+    .img-wrap { margin: 48px 0; position: relative; }
+    .img-wrap img { width: 100%; display: block; border-radius: 16px; border: 1px solid var(--border); }
+    .img-wrap-pair { margin: 48px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .img-wrap-pair .img-wrap { margin: 0; }
+    .img-wrap-pair .img-caption { margin-top: 8px; }
+    .img-flag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      background: var(--ink);
+      color: rgba(255,255,255,0.82);
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 20px;
+    }
+    .img-caption {
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink);
+      opacity: 0.75;
+      letter-spacing: 0.01em;
+      font-style: italic;
+    }
+
+    /* Results */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .results-pane { background: var(--bg); padding: 36px; }
+    .results-pane--dark { background: var(--ink); }
+    .results-pane-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 24px;
+    }
+    .results-pane--dark .results-pane-label { color: rgba(255,255,255,0.28); opacity: 1; }
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .metric:last-child { border-bottom: none; }
+    .results-pane--dark .metric { border-color: rgba(255,255,255,0.06); }
+    .metric-name {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink);
+      opacity: 0.62;
+      letter-spacing: -0.005em;
+      line-height: 1.4;
+    }
+    .results-pane--dark .metric-name { color: rgba(255,255,255,0.55); opacity: 1; }
+    .metric-val {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 24px;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .results-pane--dark .metric-val { color: rgba(255,255,255,0.82); }
+    .results-grid--single { grid-template-columns: 1fr; }
+
+    /* Design decisions */
+    .decisions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .decisions-grid--2col { grid-template-columns: repeat(2, 1fr); }
+    .decision { padding: 36px; background: var(--dark); transition: background 0.22s; }
+    .decision:hover { background: rgba(255,255,255,0.015); }
+    .decision-idx {
+      display: block;
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 42px;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.22);
+      line-height: 1;
+      margin-bottom: 22px;
+    }
+    .decision-heading {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      margin-bottom: 12px;
+    }
+    .decision-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.72;
+      color: rgba(255,255,255,0.52);
+      letter-spacing: -0.005em;
+    }
+
+    /* Key insight callout */
+    .insight-callout {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      margin: 48px 0;
+      background: rgba(28,28,26,0.02);
+      position: relative;
+    }
+    .insight-callout-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .insight-callout-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(22px, 2.8vw, 32px);
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .insight-callout-body {
+      font-size: 15px;
+      font-weight: 200;
+      line-height: 1.8;
+      color: var(--ink);
+      opacity: 0.75;
+      max-width: 680px;
+    }
+    .insight-callout-body strong { font-weight: 400; color: var(--ink); opacity: 1; }
+
+    /* Compare grid */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 48px 0;
+    }
+    .compare-pane { background: var(--bg); padding: 36px; }
+    .compare-pane--protected { background: rgba(28,28,26,0.03); }
+    .compare-pane-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .compare-item {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--ink);
+      opacity: 0.70;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+    }
+    .compare-item:last-child { border-bottom: none; }
+    .compare-item::before { font-size: 10px; opacity: 0.4; flex-shrink: 0; margin-top: 2px; }
+    .compare-pane--changed .compare-item::before { content: "→"; }
+    .compare-pane--protected .compare-item::before { content: "✓"; }
+
+    /* Vision block */
+    .vision-block { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 48px; }
+    .vision-top { padding: 48px; background: rgba(28,28,26,0.03); border-bottom: 1px solid var(--border); }
+    .vision-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(26px, 3.2vw, 38px);
+      letter-spacing: -0.022em;
+      line-height: 1.14;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .vision-body { font-size: 15px; font-weight: 200; line-height: 1.78; color: var(--ink); opacity: 0.75; }
+    .vision-features { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .vision-feature { padding: 32px 36px; border-right: 1px solid var(--border); }
+    .vision-feature:last-child { border-right: none; }
+    .vision-feature-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.32;
+      margin-bottom: 10px;
+    }
+    .vision-feature-text { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink); opacity: 0.72; }
+
+    /* Reflections */
+    .reflections-headline {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--ink);
+      max-width: 500px;
+      margin-bottom: 48px;
+    }
+    .reflection {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 56px;
+      align-items: start;
+      padding: 38px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .reflection:first-of-type { border-top: 1px solid var(--border); }
+    .reflection:last-of-type { border-bottom: none; }
+    .reflection-heading {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 17px;
+      letter-spacing: -0.012em;
+      line-height: 1.38;
+      color: var(--ink);
+    }
+    .reflection-body {
+      font-size: 15px;
+      font-weight: 200;
+      line-height: 1.8;
+      color: var(--ink);
+      opacity: 0.75;
+      letter-spacing: -0.005em;
+    }
+    .reflection-body strong { font-weight: 400; color: var(--ink); opacity: 1; }
+
+    /* Phase sections */
+    .phase-section {
+      padding-top: 56px;
+      margin-top: 56px;
+      border-top: 1px solid var(--border);
+    }
+    .phase-section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+
+    /* Footer */
+    .case-footer { padding: 64px 0; border-top: 1px solid var(--border); }
+    .site-footer { padding: 34px 0; }
+    .site-footer-inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 56px; display: flex; justify-content: space-between; align-items: center; }
+    .site-footer-copy { font-size: 13px; font-weight: 300; color: var(--ink); opacity: 0.55; }
+    .site-footer-links { display: flex; gap: 32px; }
+    .site-footer-links a { font-size: 13px; font-weight: 300; color: var(--ink); opacity: 0.55; text-decoration: none; }
+    .site-footer-links a:hover { opacity: 1; }
+    .case-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-ring {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1.5px solid rgba(28,28,26,0.22);
+      border-radius: 100px;
+      padding: 13px 26px;
+      transition: border-color 0.22s, background 0.22s;
+    }
+    .btn-ring:hover { border-color: rgba(28,28,26,0.55); background: rgba(28,28,26,0.04); }
+    .next-label {
+      font-size: 12px;
+      opacity: 0.65;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      transition: opacity 0.22s;
+    }
+    .next-label:hover { opacity: 1; }
+
+    /* Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.07s; }
+    .reveal-d2 { transition-delay: 0.14s; }
+    .reveal-d3 { transition-delay: 0.21s; }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Redesign grid */
+    .redesign-hero {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 48px 0 12px;
+    }
+    .redesign-hero img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .redesign-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .redesign-grid img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* Hamburger + mobile menu */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5.5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 210;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform 0.28s ease, opacity 0.28s ease;
+    }
+    body.menu-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    body.menu-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    body.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 195;
+      background: var(--bg);
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 28px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-menu-links li {
+      border-bottom: 1px solid rgba(28, 28, 26, 0.10);
+      padding: 20px 0;
+    }
+    .mobile-menu-links li:first-child { border-top: 1px solid rgba(28, 28, 26, 0.10); }
+    .mobile-menu-links a {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(42px, 11vw, 60px);
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.82;
+      transition: opacity 0.2s ease;
+      line-height: 1.15;
+    }
+    .mobile-menu-links a:hover { opacity: 1; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-wrap { padding: 0 28px; }
+      .hero { padding-top: 100px; }
+      .img-wrap-pair { grid-template-columns: 1fr; }
+      .hero-headline { font-size: 40px; }
+      .inner, .case-footer-inner, .site-footer-inner { padding: 0 24px; }
+      .stat-rail-inner { grid-template-columns: repeat(2, 1fr); padding: 0; }
+      .stat { text-align: center; padding: 40px 16px 36px; }
+      .stat-num { font-size: 32px; }
+      .role-grid { grid-template-columns: 1fr; gap: 24px; }
+      .phase-wrap { grid-template-columns: 52px 1fr; gap: 16px; }
+      .phase-num { font-size: 40px; }
+      .results-grid, .compare-grid { grid-template-columns: 1fr; }
+      .decisions-grid, .decisions-grid--2col { grid-template-columns: 1fr; }
+      .vision-features { grid-template-columns: 1fr; }
+      .vision-feature { border-right: none; border-bottom: 1px solid var(--border); }
+      .reflection { grid-template-columns: 1fr; gap: 14px; }
+      .case-footer-inner { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+      .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .site-footer-links { flex-direction: column; gap: 6px; }
+      .img-grid-2, .img-grid-3 { grid-template-columns: 1fr; }
+      .redesign-hero, .redesign-grid { grid-template-columns: repeat(2, 1fr); }
+      .insight-callout { padding: 32px 24px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      nav.nav-hidden { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+    }
+    @media (max-width: 600px) {
+      nav { padding: 24px 0; }
+      .nav-wrap { padding: 0 28px; }
+      .redesign-hero, .redesign-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-wrap">
+      <a href="index.html" class="nav-logo"><span class="nav-bolt">⚡</span> Sarah LeCroy</a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ══ HERO ════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="inner">
+      <a href="index.html#work" class="back-link">← All work</a>
+      <p class="eyebrow">Intuit Mailchimp · Account security</p>
+      <h1 class="hero-headline">
+        Modernizing account security at scale
+      </h1>
+      <p class="hero-lede">
+        When Intuit leadership tasked my team with working toward mandating <strong>all</strong> Mailchimp customers move to two-factor authentication,
+        my team inherited a security system with almost no documentation, engineers who had built it were long gone,
+        and users who were already angry. What followed was equal parts archaeology and product strategy/design.
+        <strong>This is the story of how we turned a compliance ask into a meaningful security and experience overhaul.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ STAT RAIL ═══════════════════════════════════════════ -->
+  <div class="stat-rail" role="region" aria-label="Key project facts">
+    <div class="stat-rail-inner">
+      <div class="stat">
+        <span class="stat-num">2</span>
+        <span class="stat-label">Overlapping auth systems untangled</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">8</span>
+        <span class="stat-label">User stories across all user types &amp; auth states</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Delivery phases sequenced around security risk</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">3+</span>
+        <span class="stat-label">Teams in collaboration</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ROLE ════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">My role</span>
+      <div class="role-grid">
+        <div class="role-label">Lead Designer,<br />Account Security</div>
+        <ul class="role-items reveal">
+          <li>Led end-to-end design across all three phases of the project, from audit through final delivery</li>
+          <li>Reverse-engineered two undocumented legacy authentication systems through hands-on testing, screen recording, and cross-functional discovery</li>
+          <li>Mapped every user type and authentication state into 8 user stories, ensuring no edge case went unaccounted for</li>
+          <li>Helped identify a product-level risk in requiring mandatory 2FA - the prevalence of credential sharing across paid accounts - surfaced through voice-of-customer feedback and behavioral data</li>
+          <li>Presented a fully interactive prototype directly to the CTO, walking through every redesigned screen and the friction points the team had resolved. He expressed pride in what the team had built</li>
+          <li>Collaborated with the compliance, security, and engineering teams throughout to ensure every design decision met both security and accessibility standards</li>
+          <li>Coordinated cross-team consistency by sharing redesigned settings patterns with adjacent teams working on other Settings tabs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ THE MANDATE ═════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">The mandate</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          A parent company directive. A product no one fully understood.
+        </h2>
+        <p class="phase-sub">Why this project was harder than it sounds</p>
+      </div>
+
+      <p class="body-copy">
+        Requiring two-factor authentication across an entire user base isn't something most SaaS products do. Banks do it.
+        Government portals do it. Email marketing platforms generally don't. So when Intuit leadership issued the directive,
+        my team felt the weight of the ask immediately: <strong>users already had complicated feelings about Mailchimp's authentication
+        experience, and we were being asked to make it mandatory.</strong>
+      </p>
+
+      <p class="body-copy">
+        We quickly got to work auditing the current state. And that's when things got interesting. There was almost no internal
+        documentation. The engineers who had originally built the authentication system had largely left the company.
+        So we did what you do when the map doesn't exist: we drew it ourselves.
+      </p>
+
+      <div class="img-wrap-pair reveal">
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">Before</span>
+            <img src="images/account-security-2fa/01_old_accountsecuritypage.webp" alt="Account security settings page before redesign" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px;">The state of Mailchimp's account security settings before this project - a jumble of options with little hierarchy or clear ownership.</p>
+        </div>
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">After</span>
+            <img src="images/account-security-2fa/01_Redesign_SetupUp2FA.png" alt="Account security settings page after redesign" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px;">One screen from our redesigned flow - clearer hierarchy, information architecture, and instructions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ THE DISCOVERY ════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">The discovery</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Two systems. No documentation. One very confused user base.
+        </h2>
+        <p class="phase-sub">What we found when we went looking</p>
+      </div>
+
+      <p class="body-copy">
+        We set up test accounts across different user types - owners, admins, authors, viewers - and walked through every 
+        possible authentication path, recording everything. What emerged was a picture no one at the company had seen clearly before:
+        there were two entirely separate authentication systems running in parallel.
+      </p>
+
+      <p class="body-copy">
+        The first was what we came to call <strong>Verification</strong> - a lightweight security layer that users would sometimes
+        encounter after creating their account. Intermittent and nearly impossible to reproduce reliably, it relied on outdated methods
+        like security questions. The second was the traditional <strong>two-factor authentication</strong> that users opted into
+        through a buried settings path. The two systems had different triggers, different UI, and were deeply enmeshed in sensitive
+        sign-in code that our engineers had to approach with extreme caution.
+      </p>
+
+      <p class="body-copy">
+        To make things more chaotic, we discovered that one of the verification pathways had been quietly added years earlier 
+        as a one-off fix for a high-value client who couldn't receive SMS codes while traveling abroad. It had never been removed.
+        <strong>Security debt, in production, invisibly affecting real users.</strong>
+      </p>
+
+      <div class="img-wrap-pair reveal">
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">Before</span>
+            <img src="images/account-security-2fa/01_Old_VerificationSetup.webp" alt="Old verification setup screen" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px;">The legacy Verification screen</p>
+        </div>
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">Before</span>
+            <img src="images/account-security-2fa/02_Old_VerificationSetup.webp" alt="Old 2FA verification screen" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px;">The legacy SMS Verification screen - no hierarchy or consistency with type styles</p>
+        </div>
+      </div>
+
+      <div class="insight-callout reveal">
+        <span class="insight-callout-label">The complexity, in plain terms</span>
+        <h3 class="insight-callout-headline">Verification and 2FA looked the same to users. <br />But they were not the same thing.</h3>
+        <p class="insight-callout-body">
+          Users who had set up 2FA were genuinely confused when they encountered the Verification screen, understandably so. 
+          They'd already "done security." The distinction between these two systems was invisible to the user and poorly understood 
+          even internally. <strong>Before we could redesign anything, we had to fully understand what we'd inherited, and then 
+          figure out what was even possible to change.</strong> Our engineers made clear that Verification was so deeply embedded 
+          in core sign-in code that <strong>removing it entirely was out of scope.</strong> So we'd have to make it the best version of itself 
+          it could be, while making it far less confusing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ THE PROBLEMS ══════════════════════════════════════════ -->
+  <section class="section section--dark">
+    <div class="inner">
+      <span class="eyebrow eyebrow--light">The problems</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title phase-title--light">
+          Five distinct experience failures. One very vocal user base.
+        </h2>
+        <p class="phase-sub phase-sub--light">What our VoC data and user testing surfaced</p>
+      </div>
+
+      <p class="body-copy body-copy--light">
+        Before a single wireframe was drawn, I went deep into our Qualtrics feedback, user testing recordings, and support 
+        tickets to understand where exactly the experience was breaking down. 
+      </p>
+
+      <div class="decisions-grid decisions-grid--2col reveal">
+        <div class="decision">
+          <span class="decision-idx">01</span>
+          <span class="decision-heading">The Remember Me checkbox that didn't remember</span>
+          <p class="decision-body">
+            Users were furious about being prompted to re-authenticate after already selecting "Remember me." 
+            We eventually traced it to a cookie issue, but the damage to trust had already been done.
+            Users assumed Mailchimp was just ignoring their preferences.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">02</span>
+          <span class="decision-heading">A modal that tricked users into submitting too early</span>
+          <p class="decision-body">
+            The Configure Authenticator App modal was so tall that users with certain viewport heights would see the 
+            sticky Submit button sitting right below Step 3 of a 4-step process. They'd hit Submit, get an error, 
+            and have no idea why. This drove an enormous volume of support tickets.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">03</span>
+          <span class="decision-heading">An SMS option sent codes nowhere</span>
+          <p class="decision-body">
+            Users on the Login Verification screen were offered the option to verify via SMS even if they had 
+            never provided a phone number. The code went nowhere. The error state was unhelpful. The user was stuck.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">04</span>
+          <span class="decision-heading">A "success" state that looked like a prompt</span>
+          <p class="decision-body">
+            After successfully enabling 2FA, the confirmation screen still showed a "Configure Authenticator" button 
+            alongside a filled checkbox. Users didn't know if they were done or just partway through. For a security 
+            setting, this ambiguity was particularly damaging.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">05</span>
+          <span class="decision-heading">Copy that was comedic when it needed to be serious</span>
+          <p class="decision-body">
+            Mailchimp's brand voice is playful, and some of the error and success messages reflected that. 
+            But account security isn't a place for charm. We needed copy that was precise, 
+            directive, and gave users a clear path forward. Not a punchline.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">06</span>
+          <span class="decision-heading">Security questions that were actually insecure</span>
+          <p class="decision-body">
+            Verification still offered security questions as an authentication method. This is a known weak security 
+            practice: answers are guessable, findable on social media, or forgotten over time.
+            Deprecating this method safely, without locking out users who relied on it, was one of our first design challenges.
+          </p>
+        </div>
+      </div>
+
+      <!-- IMAGE PLACEHOLDER: 2-up: the modal with sticky footer issue + the confusing success state -->
+      <!-- SUGGESTED IMAGE: Left = Configure Authenticator App modal showing the tall scroll issue, with the sticky Submit/Cancel bar visible. Right = The confirmation screen showing the ambiguous "filled checkbox + Configure button" state. Both before screenshots. -->
+      <div class="img-wrap-pair reveal" style="margin-top: 48px;">
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">Before</span>
+            <img src="images/account-security-2fa/pre-auth_setup_authentication_modal.webp" alt="Authenticator app setup modal before redesign" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px; color: rgba(255,255,255,0.75);">The authenticator setup modal before redesign. The modal was poorly designed with a sticky footer, which blocked the code entry field, causing early submission errors.</p>
+        </div>
+        <div>
+          <div class="img-wrap">
+            <span class="img-flag">Before</span>
+            <img src="images/account-security-2fa/confusing_confirmation.webp" alt="Confusing 2FA confirmation state before redesign" />
+          </div>
+          <p class="img-caption" style="margin-top: 12px; color: rgba(255,255,255,0.75);">The 2FA confirmation screen before redesign. Users couldn't tell if setup was complete or if there was still something left to do.</p>
+        </div>
+      </div>
+
+      <div class="pull-quote pull-quote--light reveal">
+        <p>"Users weren't failing because 2FA is hard. They were failing because the experience gave them no reliable signals."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ THE CTO PIVOT ════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">The unexpected discovery</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Our research uncovered something no one wanted to say out loud.
+        </h2>
+        <p class="phase-sub">What the data revealed, and how the project adapted</p>
+      </div>
+
+      <p class="body-copy">
+        Midway through the project, as we dug into why users were struggling with 2FA login, a pattern became impossible to ignore. Users were forgetting which auth app they'd used, or which phone number they'd registered.
+        <strong>A significant number of users were sharing logins across multiple people rather than buying additional seats.</strong>
+        This was against Mailchimp's user agreement, but it was happening at scale.
+      </p>
+
+      <p class="body-copy">
+        Requiring 2FA for every user would effectively end this behavior, which, in theory, is correct. In practice,
+        it would mean losing a large number of high-value paid accounts overnight. Our voice-of-customer data made
+        this risk visible to the team, and it informed how the project's scope was ultimately defined.
+      </p>
+
+      <div class="insight-callout reveal">
+        <span class="insight-callout-label">A narrower, more honest scope</span>
+        <h3 class="insight-callout-headline">Rather than enforce 2FA for all, the project focused on the users who chose to use it.</h3>
+        <p class="insight-callout-body">
+          The goal shifted from a company-wide mandate to something more achievable and less risky:
+          <strong>making the security experience dramatically better for users who actively opted into it.</strong>
+          That meant fixing every broken flow, clarifying every confusing state, and ensuring that users
+          who wanted strong account security could actually get there without friction.
+        </p>
+      </div>
+
+      <p class="body-copy">
+        Later in the project, I presented a fully interactive prototype of our proposed redesign directly to the CTO.
+        He had been closely invested in the project and wanted to see the work firsthand. I walked him through
+        every redesigned screen, pointing out the specific moments of friction the team had resolved for users.
+        At the end of the call, he said he was proud of what the team had accomplished, calling it a "thankless job"
+        that would never top anyone's roadmap, but exactly the kind of work that kept Mailchimp's customers secure.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ THE WORK PHASES ════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">The work</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Three phases, sequenced around risk.
+        </h2>
+        <p class="phase-sub">How I structured the design and delivery to minimize security exposure at every step</p>
+      </div>
+
+      <p class="body-copy">
+        With my PM, we broke the work into three phases, ordered deliberately so that we first removed the weakest security option, security questions, as an option during sign up. 
+      </p>
+
+      <!-- PHASE 1 -->
+      <div class="phase-section">
+        <div class="phase-wrap">
+          <span class="phase-num">1</span>
+          <div>
+            <h3 class="phase-title">Deprecate security questions as a verification method</h3>
+            <span class="phase-sub">Removing the lowest-security option without locking anyone out</span>
+          </div>
+        </div>
+
+        <p class="body-copy">
+          Security questions are a well-documented weak point in authentication design: answers are guessable,
+          often findable on social media, and frequently forgotten. Deprecating them was the right move, but it 
+          couldn't be abrupt: our compliance team confirmed that a subset of users occasionally couldn't receive 
+          SMS codes and had been relying on security questions as their only fallback.
+        </p>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/01_Old_VerificationSetup.webp" alt="Legacy verification setup screen" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The legacy verification screen before redesign.</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/01_Redesign_Verification.webp" alt="Redesigned verification screen" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The redesigned verification screen.</p>
+          </div>
+        </div>
+
+        <p class="body-copy">
+          The solution was a phased approach: we removed security questions as a new setup option immediately, 
+          but allowed existing users who had them to continue updating their questions as an interim measure. 
+          In parallel, we built a path to migrate those users toward SMS and, eventually, toward more secure 
+          authenticator apps, so that security questions could be retired entirely in the near future.
+          <strong>Removing a method safely is often harder than adding one.</strong>
+        </p>
+      </div>
+
+      <!-- PHASE 2 -->
+      <div class="phase-section">
+        <div class="phase-wrap">
+          <span class="phase-num">2</span>
+          <div>
+            <h3 class="phase-title">A complete redesign of the in-app security settings</h3>
+            <span class="phase-sub">8 user stories. Every error state. No one left stuck.</span>
+          </div>
+        </div>
+
+        <p class="body-copy">
+          The security settings page was buried and visually outdated. Most of the settings pages at the time 
+          used legacy styling that had fallen behind the rest of the app. My first instinct, and one I had to
+          advocate for, was that this redesign needed to do more than fix the UX. <strong>It needed to bring 
+          the visual design fully in line with where Mailchimp's product was headed.</strong>
+        </p>
+
+        <p class="body-copy">
+          With my PM, I wrote 8 user stories covering the full matrix of user types (owners, admins, authors, viewers) 
+          crossed with verification and 2FA states. I mapped every possible path a user could take (setup, edit,
+          remove, recover) and ensured that every error state had clear copy pointing toward a resolution. 
+          For users on multi-seat accounts, I added explicit guidance about how verification works at the 
+          individual level, since this had been a major source of confusion.
+        </p>
+
+        <p class="body-copy">
+          After completing this redesign, I worked with other teams who were updating adjacent Settings tabs to 
+          share the new patterns, so the style updates would propagate consistently, and users would
+          experience a coherent settings environment rather than a patchwork of redesigned and legacy pages.
+        </p>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/01_old_accountsecuritypage.webp" alt="Account security settings page before redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The security settings page before redesign.</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/01_Redesign_SetupUp2FA.png" alt="Account security settings page after redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The redesigned security settings page. Clear distinction between different security options; no more modals - setup happens right on the page.</p>
+          </div>
+        </div>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/pre-auth_setup_authentication_modal.webp" alt="Authenticator setup modal before redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The authenticator setup modal before redesign. Had a high rate of submission errors due to the sticky footer issue.</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/03_Redesign_LogIn_Setup2FA.webp" alt="Redesigned authenticator setup modal" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">The redesigned authenticator setup modal - improved information hierarchy and user guidance.</p>
+          </div>
+        </div>
+
+        <div class="img-wrap reveal" style="margin-bottom: 0;">
+          <img src="images/account-security-2fa/userstories_flows.png" alt="Figma user stories and flows" />
+        </div>
+        <p class="img-caption" style="margin-top: 16px;">A portion of my Figma which included 8 user stories and the flows that went with them.</p>
+      </div>
+
+      <!-- PHASE 3 -->
+      <div class="phase-section">
+        <div class="phase-wrap">
+          <span class="phase-num">3</span>
+          <div>
+            <h3 class="phase-title">Redesign the login, verification, and account recovery flows</h3>
+            <span class="phase-sub">The most user-facing work, and the most technically constrained</span>
+          </div>
+        </div>
+
+        <p class="body-copy">
+          Phase 3 was the largest surface area and the most user-visible work: the full sign-in experience, 
+          the verification and 2FA login flows, and the account recovery paths. These pages were built in Dojo,
+          a legacy JavaScript framework that doesn't share component libraries with the rest of the app. 
+          That meant our engineers couldn't simply port the design library components over. 
+          <strong>Instead, I worked closely with them to match our design library elements as closely as possible 
+          within Dojo's constraints</strong>, so that users moving from setup into the login experience 
+          wouldn't notice a jarring visual shift.
+        </p>
+
+        <p class="body-copy">
+          We also made every screen in this phase responsive, something the existing flows simply weren't. 
+          And we completely rewrote the error and success copy throughout. The previous messages had a playful, 
+          comedic tone in places where users needed clarity most. For account security, every error needed to 
+          tell the user exactly what went wrong and what to do next. No charm. Just help.
+        </p>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/01_Old_VerificationLoginEmail.webp" alt="Verification login screen before redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">Verification login - before redesign</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/01_Redesign_VerificationLogin.webp" alt="Redesigned verification login screen" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">Verification login - after redesign</p>
+          </div>
+        </div>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/01_Old_2FALogin.webp" alt="2FA login screen before redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">2FA login - before redesign</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/06_Redesign_LogIn_Auth2FA.webp" alt="Redesigned 2FA login screen" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">2FA login - after redesign</p>
+          </div>
+        </div>
+
+        <div class="img-wrap-pair reveal">
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">Before</span>
+              <img src="images/account-security-2fa/AccountRecovery.webp" alt="Account recovery flow before redesign" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">Account recovery - before redesign</p>
+          </div>
+          <div>
+            <div class="img-wrap">
+              <span class="img-flag">After</span>
+              <img src="images/account-security-2fa/Redesign_accountrecovery.webp" alt="Redesigned account recovery flow" />
+            </div>
+            <p class="img-caption" style="margin-top: 12px;">Account recovery - after redesign</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ HARD DECISIONS ═══════════════════════════════════════ -->
+  <section class="section section--dark">
+    <div class="inner">
+      <span class="eyebrow eyebrow--light">The hard calls</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title phase-title--light">
+          Judgment under constraints.
+        </h2>
+        <p class="phase-sub phase-sub--light">Where the complexity required real design leadership, not just execution</p>
+      </div>
+
+      <div class="decisions-grid decisions-grid--2col reveal">
+        <div class="decision">
+          <span class="decision-idx">01</span>
+          <span class="decision-heading">Keep Verification, but make it honest</span>
+          <p class="decision-body">
+            Engineering told us Verification was too embedded in core sign-in code to remove. 
+            Rather than fight that constraint, I redirected energy into making the experience 
+            clearly legible: better copy, clearer scope, and explicit guidance to help users 
+            who had also set up 2FA understand why they were seeing something different. 
+            Working within an immovable constraint productively is a design skill, not a compromise.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">02</span>
+          <span class="decision-heading">Name the risk the data was pointing to</span>
+          <p class="decision-body">
+            When our research revealed the account-sharing behavior that mandatory 2FA would expose,
+            the safest move would have been to stay quiet and execute the mandate. Instead, the team
+            surfaced the finding and its implications clearly. Recognizing when research is pointing
+            at something bigger than the original brief, and saying so, is part of the job.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">03</span>
+          <span class="decision-heading">Maintain security question access for a protected subset</span>
+          <p class="decision-body">
+            Our compliance team identified users who occasionally couldn't receive SMS,
+            often travelers or those in regions with unreliable mobile networks. 
+            Fully removing security questions immediately would lock them out. 
+            We maintained a temporary edit path for this group while building toward 
+            migration to a more secure method. Security and accessibility in tension, resolved carefully.
+          </p>
+        </div>
+        <div class="decision">
+          <span class="decision-idx">04</span>
+          <span class="decision-heading">Push Dojo styling as close to the design library as possible</span>
+          <p class="decision-body">
+            The Dojo framework didn't support our modern component library. Rather than accept 
+            a visual disconnect between the in-app settings and the login experience, I worked 
+            with engineers to manually approximate design library elements within Dojo's constraints. 
+            Users moving from setup into login should feel like they're in the same product, 
+            not two different eras of it.
+          </p>
+        </div>
+      </div>
+
+      <div class="pull-quote pull-quote--light reveal">
+        <p>"This will never make it on anyone's roadmap. But it's exactly the kind of work that keeps our customers secure." <br><small>CTO, Mailchimp</small></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RESULTS ══════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Results</span>
+
+      <div class="phase-wrap--full">
+        <h2 class="phase-title">
+          Dramatically less noise. Meaningfully more trust.
+        </h2>
+        <p class="phase-sub">What a slow rollout and attentive monitoring revealed</p>
+      </div>
+
+      <p class="body-copy">
+        This wasn't a project with a clean A/B test behind it. Given the security-critical nature of the work, 
+        we did a slow rollout and monitored closely for issues rather than running a controlled experiment. 
+        The signal we watched most closely was the one that had driven this project from the start: 
+        <strong>user complaints in Qualtrics dropped dramatically after launch</strong>, 
+        particularly around the "Remember Me" inconsistency, the authenticator modal, and the 
+        SMS-to-nowhere bug that had been generating steady support volume for months.
+      </p>
+
+      <div class="results-grid reveal">
+        <div class="results-pane">
+          <span class="results-pane-label">UX problems resolved</span>
+          <div class="metric">
+            <span class="metric-name">Security questions deprecated as a setup method</span>
+            <span class="metric-val">✓</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">SMS-to-nowhere bug eliminated</span>
+            <span class="metric-val">✓</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Authenticator modal scroll/submit error fixed</span>
+            <span class="metric-val">✓</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">All flows made responsive</span>
+            <span class="metric-val">✓</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Error copy overhauled across all auth surfaces</span>
+            <span class="metric-val">✓</span>
+          </div>
+        </div>
+        <div class="results-pane results-pane--dark">
+          <span class="results-pane-label">Strategic outcomes</span>
+          <div class="metric">
+            <span class="metric-name">Mandatory 2FA risk identified and escalated</span>
+            <span class="metric-val">Averted</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">CTO confidence restored mid-project</span>
+            <span class="metric-val">Secured</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Settings redesign pattern shared across teams</span>
+            <span class="metric-val">3+ teams</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Qualtrics complaint volume post-launch</span>
+            <span class="metric-val">↓ Significantly</span>
+          </div>
+        
+        </div>
+      </div>
+
+      <div class="insight-callout reveal" style="margin-top: 44px;">
+        <span class="insight-callout-label">What made this hard to measure</span>
+        <h3 class="insight-callout-headline">The best outcome was the risk we didn't take.</h3>
+        <p class="insight-callout-body">
+          There's no A/B test that captures "churn we avoided by not mandating 2FA." There's no experiment 
+          variation that shows users not getting locked out of their accounts. The most meaningful output of 
+          this project was a combination of experience debt retired, a company-level risk surfaced and avoided, 
+          and an authentication system that finally worked the way users expected. 
+          <strong>Some of the highest-value design work doesn't ship with a lift number attached to it.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ REFLECTIONS ═════════════════════════════════════════ -->
+  <section class="section">
+    <div class="inner">
+      <span class="eyebrow">Reflections</span>
+      <h2 class="reflections-headline">What this project clarified for me.</h2>
+
+      <div>
+        <div class="reflection reveal">
+          <h3 class="reflection-heading">The most valuable deliverable was the discovery work itself</h3>
+          <p class="reflection-body">
+            Before any design was produced, the most important thing we did was map what actually existed. 
+            Two undocumented auth systems. A legacy workaround left in production. Edge cases no one had 
+            fully enumerated. <strong>Bringing that clarity to the surface through methodical testing,
+            cross-functional conversations, and Figma flows gave engineering, compliance, and leadership
+            a shared foundation to make decisions from.</strong> That's not UX work. That's product infrastructure.
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d1">
+          <h3 class="reflection-heading">Constraints aren't obstacles. They're the design problem.</h3>
+          <p class="reflection-body">
+            A different version of this project would have waited for the perfect conditions: Dojo refactored, 
+            documentation in place, a clean slate. We worked with what existed. We made the Verification screen 
+            as clear as it could be, even though we couldn't remove it. We approximated the design library in 
+            Dojo rather than accepting a jarring visual gap. <strong>The skill isn't designing in ideal conditions. 
+            It's designing well despite the real ones.</strong>
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d2">
+          <h3 class="reflection-heading">Research that changes strategy is the highest-value research</h3>
+          <p class="reflection-body">
+            Most design research confirms what you already suspected, or refines how you execute something. 
+            The account-sharing insight didn't do either of those things. It changed the entire direction
+            of the project. <strong>That only happens when you're looking at the data honestly, not looking 
+            for evidence to support a predetermined outcome.</strong> Bringing that finding to the CTO, 
+            unprompted and clearly framed, was the most impactful single moment of this project.
+          </p>
+        </div>
+        <div class="reflection reveal reveal-d3">
+          <h3 class="reflection-heading">Thankless work is still worth doing well</h3>
+          <p class="reflection-body">
+            Our CTO named it directly: this kind of work doesn't get accolades, doesn't make it onto roadmap 
+            highlight reels, and doesn't generate the experiment wins that look good in review cycles. 
+            But it affects every user who tries to log in, every day. 
+            <strong>Caring about the quality of work that no one will celebrate is a choice,
+            and one that defines what kind of designer you are.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════ -->
+  <footer class="case-footer">
+    <div class="case-footer-inner">
+      <a href="index.html#work" class="btn-ring">← All work</a>
+      <a href="#" class="next-label" style="display:none;">Next case study →</a>
+    </div>
+  </footer>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span class="site-footer-copy">Sarah LeCroy © 2026</span>
+      <div class="site-footer-links">
+        <a href="mailto:sarahklecroy@gmail.com">sarahklecroy@gmail.com</a>
+        <a href="https://www.linkedin.com/in/sarahlecroy/" target="_blank" rel="noopener">linkedin.com/in/sarahlecroy/</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    window.addEventListener('scroll', () => {
+      document.body.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Hamburger menu
+    const hamburger = document.querySelector('.nav-hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    // Hide nav on mobile when scrolling down
+    (function() {
+      let lastY = window.scrollY;
+      window.addEventListener('scroll', function() {
+        if (window.innerWidth > 768 || document.body.classList.contains('menu-open')) {
+          lastY = window.scrollY;
+          return;
+        }
+        const nav = document.querySelector('nav');
+        if (window.scrollY > lastY && window.scrollY > 60) {
+          nav.classList.add('nav-hidden');
+        } else {
+          nav.classList.remove('nav-hidden');
+        }
+        lastY = window.scrollY;
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>

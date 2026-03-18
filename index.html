@@ -722,6 +722,28 @@
     // ── Render case studies from shared data ───────────────
     renderCases('work-grid');
 
+    // ── Scroll to #work anchor on load (scroll-snap blocks native anchor) ──
+    if (window.location.hash === '#work') {
+      window.addEventListener('load', () => {
+        const target = document.getElementById('work');
+        if (target) target.scrollIntoView();
+      });
+    }
+
+    // ── Fix "See my work" btn fighting scroll-snap on mobile ──
+    document.querySelectorAll('a[href="#work"]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.getElementById('work');
+        if (!target) return;
+        document.documentElement.style.scrollSnapType = 'none';
+        target.scrollIntoView();
+        setTimeout(() => {
+          document.documentElement.style.scrollSnapType = '';
+        }, 500);
+      });
+    });
+
     // ── Smooth mouse parallax on blobs ─────────────────────
     const wraps  = document.querySelectorAll('.bw');
     const pos    = Array.from(wraps).map(() => ({ x: 0, y: 0 }));

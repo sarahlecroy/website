@@ -174,26 +174,35 @@
 
     /* ─── Current role ─────────────────────────────────────── */
     .role-block {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: start;
-      gap: 24px;
       padding-bottom: 48px;
       border-bottom: 1px solid rgba(28, 28, 26, 0.10);
-      margin-bottom: 80px;
+      margin-bottom: 48px;
     }
 
     .role-left { max-width: 860px; }
 
-    .employer {
-      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
-      font-style: italic;
+    .intro-bio {
+      font-size: 17px;
       font-weight: 300;
-      font-size: clamp(34px, 3.8vw, 52px);
-      line-height: 1.0;
-      letter-spacing: -0.025em;
+      line-height: 1.68;
       color: var(--ink);
-      margin-bottom: 22px;
+      opacity: 0.92;
+      letter-spacing: -0.01em;
+      max-width: 780px;
+      padding-left: 22px;
+      border-left: 2.5px solid rgba(28,28,26,0.25);
+      margin-bottom: 52px;
+    }
+
+    .employer {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: clamp(26px, 2.8vw, 38px);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0;
     }
 
     .role-meta {
@@ -231,25 +240,39 @@
       opacity: 0.5;
     }
 
-    /* ─── Download button ──────────────────────────────────── */
+    /* ─── Download link ────────────────────────────────────── */
+    .employer-row {
+      margin-bottom: 16px;
+    }
+
+    .role-block {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      column-gap: 24px;
+      align-items: start;
+    }
+    .role-block .intro-bio   { grid-column: 1 / -1; }
+    .role-block .employer-row { grid-column: 1; }
+    .role-block .btn-download { grid-column: 2; grid-row: 3; align-self: baseline; }
+    .role-block .role-meta   { grid-column: 1; }
+    .role-block .role-bullets { grid-column: 1 / -1; }
+
     .btn-download {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-family: 'Libre Franklin', sans-serif;
-      font-size: 13px;
+      font-size: 17px;
       font-weight: 500;
       letter-spacing: -0.01em;
       color: var(--ink);
-      background: var(--ink);
-      color: var(--bg);
       text-decoration: none;
-      border-radius: 100px;
-      padding: 12px 22px;
       white-space: nowrap;
+      flex-shrink: 0;
+      opacity: 0.85;
       transition: opacity 0.22s ease;
     }
-    .btn-download:hover { opacity: 0.80; }
+    .btn-download:hover { opacity: 1; }
 
     .btn-download svg {
       width: 13px;
@@ -307,7 +330,7 @@
     }
 
     .exp-meta {
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 300;
       color: var(--ink);
       opacity: 0.48;
@@ -337,20 +360,29 @@
     .section-divider {
       border: none;
       border-top: 1px solid rgba(28, 28, 26, 0.10);
-      margin: 72px 0;
+      margin: 36px 0;
     }
 
     /* ─── Education + Awards footer row ───────────────────── */
     .credentials {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 1fr 1.5fr 2fr;
       gap: 52px;
     }
 
+    .tools-list {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: 0.78;
+      letter-spacing: -0.005em;
+    }
+
     .cred-section-label {
-      font-size: 9.5px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--ink);
       opacity: 0.38;
@@ -365,7 +397,7 @@
 
     .edu-item strong {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       color: var(--ink);
       letter-spacing: -0.01em;
@@ -373,21 +405,23 @@
     }
 
     .edu-item span {
-      font-size: 12.5px;
+      font-size: 14px;
       font-weight: 300;
+      line-height: 1.7;
       color: var(--ink);
-      opacity: 0.55;
+      opacity: 0.78;
+      letter-spacing: -0.005em;
     }
 
     .awards-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px 40px;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
     .award-item strong {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       color: var(--ink);
       letter-spacing: -0.01em;
@@ -395,11 +429,12 @@
     }
 
     .award-item p {
-      font-size: 12.5px;
+      font-size: 14px;
       font-weight: 300;
-      line-height: 1.55;
+      line-height: 1.7;
       color: var(--ink);
-      opacity: 0.55;
+      opacity: 0.78;
+      letter-spacing: -0.005em;
     }
 
     /* ─── Status badge ─────────────────────────────────────── */
@@ -504,7 +539,7 @@
     @media (max-width: 900px) {
       .role-block       { grid-template-columns: 1fr; }
       .btn-download     { justify-self: start; }
-      .credentials      { grid-template-columns: 1fr; }
+      .credentials      { grid-template-columns: 1fr 1fr; }
       .awards-grid      { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -523,8 +558,10 @@
       .page              { padding: 130px 0 80px; }
       .page-inner        { padding: 0 28px; }
       .awards-grid       { grid-template-columns: 1fr; }
-      .btn-download      { order: -1; }
+      .credentials       { grid-template-columns: 1fr; }
       .status            { display: none; }
+      .role-block        { display: flex; flex-direction: column; }
+      .role-block .btn-download { order: -1; margin-bottom: 28px; }
       .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 0 24px; }
       .site-footer-links { flex-direction: column; gap: 6px; }
       nav.nav-hidden { opacity: 0; transform: translateY(-100%); pointer-events: none; }
@@ -574,15 +611,9 @@
 
       <!-- ── Current role ── -->
       <div class="role-block">
-        <div class="role-left">
+        <p class="intro-bio">Staff Product Designer specializing in growth, onboarding and activation, using experimentation, behavioral data, and AI-powered design to move metrics that matter. Leads cross-functional pods through ambiguity and translates experiment data into product strategy, not just screens.</p>
+        <div class="employer-row">
           <h1 class="employer">Intuit Mailchimp</h1>
-          <p class="role-meta">Staff Product Designer / Design Lead &nbsp; 2021 – 2025</p>
-          <ul class="role-bullets">
-            <li>Owned end-to-end design strategy for Mailchimp's account setup experience, serving ~60K new users per week and leading a cross-functional pod of 10+ (PM, engineering, data, design) through the full product lifecycle.</li>
-            <li>Designed a pattern for setup guidance that drove a 38% increase in domain authentications, 15% lift in list imports, and 37% increase in SMS adoption, directly improving activation and retention across the growth funnel.</li>
-            <li>Partnered with Intuit's GenAI team to design AI-powered autofill capabilities that lifted paid conversion and revenue per user, and built cross-platform alignment with QuickBooks to scale personalization strategies across Intuit's ecosystem.</li>
-            <li>Used three years of experiment data and behavioral analytics (FullStory, A/B testing) to reframe leadership's approach to the 11-screen setup flow, shifting strategy from "cut screens" to "optimize what converts" and presenting recommendations to C-suite stakeholders.</li>
-          </ul>
         </div>
         <a href="images/SarahLeCroy_Resume.pdf" download class="btn-download">
           <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -590,80 +621,54 @@
           </svg>
           Download resumé
         </a>
+        <p class="role-meta">Staff Product Designer / Design Lead &nbsp; 2021 – 2025</p>
+        <ul class="role-bullets">
+          <li>Owned end-to-end design strategy for Mailchimp's account setup experience, serving ~60K new users per week and leading a cross-functional pod of 10+ (PM, engineering, data, design) through the full product lifecycle.</li>
+          <li>Designed a pattern for setup guidance that drove a 38% increase in domain authentications, 15% lift in list imports, and 37% increase in SMS adoption, directly improving activation and retention across the growth funnel.</li>
+          <li>Partnered with Intuit's GenAI team to design AI-powered autofill capabilities (website URL + industry detection) that achieved 61% AI acceptance and lifted paid conversion by 14.2%, and built cross-platform alignment with QuickBooks to scale personalization strategies across Intuit's ecosystem.</li>
+          <li>Used three years of experiment data and behavioral analytics (FullStory, A/B testing) to reframe leadership's approach to the 11-screen setup flow, shifting strategy from "cut screens" to "optimize what converts" and presenting recommendations to C-suite stakeholders.</li>
+        </ul>
       </div>
 
       <!-- ── Previous experience ── -->
-      <h2 class="section-heading">Previous experience</h2>
-
       <div class="exp-group">
-        <p class="exp-group-label">Product Design Consultant &nbsp; 2015 – 2021</p>
+        <p class="cred-section-label">Previous experience</p>
 
         <div class="exp-item">
           <div class="exp-header">
-            <span class="exp-company">National Security Innovation Network</span>
-            <span class="exp-meta">Remote <span>Oct 2016 – Nov 2020</span></span>
+            <span class="exp-company">Independent Product Design Consultant</span>
+            <span class="exp-meta">Remote <span>2015 – 2021</span></span>
           </div>
-          <p class="exp-desc">Designed UX and IA methodologies to deliver platform enhancements to unite private innovators with military and university communities to drive national security improvements.</p>
+          <p class="exp-desc">Delivered UX strategy and product design across B2B and B2C clients including a national security platform, international e-commerce, and civic tech, spanning user research, IA, and end-to-end product flows.</p>
         </div>
 
         <div class="exp-item">
           <div class="exp-header">
-            <span class="exp-company">Tundra</span>
-            <span class="exp-meta">Remote <span>Jan 2018 – June 2020</span></span>
+            <span class="exp-company">Senior Interactive Designer</span>
+            <span class="exp-meta">Chicago; Los Angeles <span>2005 – 2015</span></span>
           </div>
-          <p class="exp-desc">Collaborated with global product & development teams to define user flows for digital and mobile international e-commerce site experiences.</p>
-        </div>
-
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-company">Crowdpac</span>
-            <span class="exp-meta">Remote <span>June 2018 – June 2019</span></span>
-          </div>
-          <p class="exp-desc">Collaborated with global product & development teams to define user flows for digital and mobile international e-commerce site experiences.</p>
+          <p class="exp-desc">Agency and brand interactive design (Leo Burnett, Razorfish, Design Kitchen, Phenomenon)</p>
         </div>
       </div>
 
-      <div class="exp-group">
-        <p class="exp-group-label">UX/UI/Visual Design full-time experience &nbsp; 2005 – 2015</p>
-
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-company">Phenomenon</span>
-            <span class="exp-meta">Los Angeles <span>Mar 2013 – Mar 2015</span></span>
-          </div>
-          <p class="exp-desc">Designed visual UI for ecommerce, digital campaigns and online experiences for fast-paced, interactive client work.</p>
-        </div>
-
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-company">Design Kitchen</span>
-            <span class="exp-meta">Chicago <span>Sept 2011 – November 2012</span></span>
-          </div>
-          <p class="exp-desc">Senior designer working with UX, strategy, account and in-house development teams.</p>
-        </div>
-
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-company">Arc Worldwide / Leo Burnett</span>
-            <span class="exp-meta">Chicago <span>Nov 2005 – August 2010</span></span>
-          </div>
-          <p class="exp-desc">Art direction and design for the Whirlpool and Miller Brewing brands spanning consumer digital experiences.</p>
-        </div>
-      </div>
-
-      <!-- ── Education + Awards ── -->
+      <!-- ── Tools + Education + Awards ── -->
       <hr class="section-divider">
       <div class="credentials">
+        <div>
+          <p class="cred-section-label">Tools</p>
+          <p class="tools-list">Figma, Claude Code, FullStory, usertesting.com, Jira, GitHub</p>
+        </div>
+
         <div>
           <p class="cred-section-label">Education</p>
           <div class="edu-list">
             <div class="edu-item">
-              <strong>The Creative Circus</strong>
-              <span>Certificate of Design</span>
-            </div>
-            <div class="edu-item">
               <strong>University of South Carolina Upstate</strong>
               <span>Bachelor of Arts, Graphic Design</span>
+            </div>
+            <div class="edu-item">
+              <strong>The Creative Circus</strong>
+              <span>Certificate of Design</span>
             </div>
             <div class="edu-item">
               <strong>School of the Art Institute of Chicago</strong>
@@ -677,28 +682,14 @@
           <div class="awards-grid">
             <div class="award-item">
               <strong>Cannes Lions</strong>
-              <p>Silver Lion (2016) Digital Innovation · Wilson X Basketball App</p>
-            </div>
-            <div class="award-item">
-              <strong>Web Marketing Association</strong>
-              <p>Outstanding Achievement in Web Development 2013 · Praxair.com</p>
+              <p>Silver Lion (2016) Digital Innovation<br>Wilson X Basketball App</p>
             </div>
             <div class="award-item">
               <strong>One Club</strong>
-              <p>Gold Pencil (2016) - Mobile Category · Wilson X Basketball App</p>
+              <p>Gold Pencil (2016) - Mobile Category<br>Wilson X Basketball App</p>
             </div>
-            <div class="award-item">
-              <strong>Internet Advertising Competition</strong>
-              <p>Outstanding Website - Consumer Goods 2008 · Outstanding Integrated Ad Campaign 2008 · Amana.com website redesign</p>
-            </div>
-            <div class="award-item">
-              <strong>Ad:Tech Awards</strong>
-              <p>Best B2C Marketing Website 2008 · Amana.com website redesign</p>
-            </div>
-            <div class="award-item">
-              <strong>District Addy Awards</strong>
-              <p>Silver: Website - Consumer Flash 2008 · Amana.com website redesign</p>
-            </div>
+           
+            
           </div>
         </div>
       </div>

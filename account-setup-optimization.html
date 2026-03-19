@@ -98,7 +98,7 @@
     .nav-links a:hover { opacity: 1; }
 
     .hero { padding: 180px 0 96px; border-bottom: 1px solid var(--border); }
-    .section { padding: 96px 0; border-bottom: 1px solid var(--border); }
+    .section { padding: 64px 0; border-bottom: 1px solid var(--border); }
     .section--dark { background: var(--dark); border-bottom: none; }
     .inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 56px; }
 
@@ -653,7 +653,7 @@
       transform: translateY(20px);
       transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal.visible { opacity: 1; transform: translateY(0); margin: 0; }
     .reveal-d1 { transition-delay: 0.07s; }
     .reveal-d2 { transition-delay: 0.14s; }
     .reveal-d3 { transition-delay: 0.21s; }
@@ -885,7 +885,7 @@
         had increased Gross AOV by 20.8%.</strong> In addition, our data showed that dropoff was extremely low on most screens. 
       </p>
 
-      <figure class="reveal" style="margin: 48px 0;">
+      <figure class="reveal">
         <img src="images/accountsetupoptimization/Pre-RedesignScreens.webp" alt="The 11-screen account setup flow overview" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--border);">
         <figcaption style="margin-top:14px;font-size:13px;font-weight:300;color:var(--ink);opacity:0.64;letter-spacing:0.01em;font-style:italic;">Screens from the original account setup flow, prior to our experiment.</figcaption>
       </figure>
@@ -1005,7 +1005,7 @@
         On the majority of screens, dropoff was minimal. The outlier was the plan selector, where we saw meaningful dropoff, most likely because users struggled to find the free plan option. That screen wasn't ours to redesign, so we could only flag the issue and make suggested changes. It also drove significant revenue, which meant cutting it was never on the table regardless.
       </p>
 
-      <p class="body-copy">
+      <p class="body-copy" style="margin-bottom: 0;">
         <strong>By surfacing three years of experiment history and bringing other teams into the conversation, I was able to reframe the project entirely.</strong> The question shifted from "how many screens can we cut?" to "which changes are actually defensible?" That framing protected the screens that were doing real work and gave us a shared standard for every setup decision that followed.
       </p>
 

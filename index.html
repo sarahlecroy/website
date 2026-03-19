@@ -91,6 +91,12 @@
       pointer-events: none;
     }
 
+    body.work-active .nav-links {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
     body.work-active .scroll-mark {
       opacity: 0 !important;
       pointer-events: none;
@@ -106,6 +112,7 @@
       list-style: none;
       display: flex;
       gap: 40px;
+      transition: opacity 0.3s ease;
     }
 
     .nav-links a {

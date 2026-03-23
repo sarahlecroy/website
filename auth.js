@@ -9,6 +9,7 @@
 
   // Pages that should be fully blocked until authenticated
   const GUARDED_PAGES = [
+    'about.html',
     'ai-powered-setup.html',
     'scalable-setup-guidance.html',
     'account-setup-optimization.html',
@@ -155,25 +156,6 @@
     });
   }
 
-  // Intercept a download link and require auth before allowing it
-  function guardDownloadLink(link) {
-    link.addEventListener('click', function (e) {
-      if (isAuthenticated()) return; // already authed — let it through
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      const download = link.getAttribute('download');
-      buildModal('Enter the password to download.', 'Download resumé', function () {
-        // Trigger the download programmatically after auth
-        const a = document.createElement('a');
-        a.href = href;
-        if (download !== null) a.download = download || '';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      });
-    });
-  }
-
   function init() {
     const path = window.location.pathname;
     const isGuardedPage = GUARDED_PAGES.some(p => path.endsWith(p));
@@ -181,9 +163,6 @@
     if (isGuardedPage) {
       guardPage();
     }
-
-    // Intercept any download buttons on the page
-    document.querySelectorAll('.btn-download').forEach(guardDownloadLink);
   }
 
   if (document.readyState === 'loading') {

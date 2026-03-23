@@ -690,7 +690,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-inner">
-      <p class="hero-eyebrow">Staff Product Designer</p>
+      <p class="hero-eyebrow">Product Designer</p>
       <h1 class="hero-headline">
         I bring structure <span class="dim">to ambiguous product problems.</span>
       </h1>
@@ -744,10 +744,12 @@
         const target = document.getElementById('work');
         if (!target) return;
         document.documentElement.style.scrollSnapType = 'none';
-        target.scrollIntoView();
-        setTimeout(() => {
-          document.documentElement.style.scrollSnapType = '';
-        }, 500);
+        requestAnimationFrame(() => {
+          target.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            document.documentElement.style.scrollSnapType = '';
+          }, 800);
+        });
       });
     });
 

@@ -9,7 +9,6 @@
 
   // Pages that should be fully blocked until authenticated
   const GUARDED_PAGES = [
-    'about.html',
     'ai-powered-setup.html',
     'scalable-setup-guidance.html',
     'account-setup-optimization.html',
@@ -155,6 +154,16 @@
       document.documentElement.style.overflow = '';
     });
   }
+
+  // Exposed globally so individual elements (e.g. download button) can
+  // gate an action behind the password without blocking the whole page.
+  window.requireAuth = function (callback) {
+    if (isAuthenticated()) {
+      callback();
+      return;
+    }
+    buildModal('This resumé is password protected.', 'View resumé', callback);
+  };
 
   function init() {
     const path = window.location.pathname;

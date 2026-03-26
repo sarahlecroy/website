@@ -15,6 +15,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Sarah LeCroy</title>
+  <meta name="description" content="Staff Product Designer specializing in growth, onboarding, and activation. Currently at Intuit Mailchimp.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="About — Sarah LeCroy">
+  <meta property="og:description" content="Staff Product Designer specializing in growth, onboarding, and activation. Currently at Intuit Mailchimp.">
+  <meta property="og:image" content="https://YOUR_DOMAIN/images/og-image.jpg">
+  <meta property="og:url" content="https://YOUR_DOMAIN/about.html">
+  <meta property="og:type" content="website">
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About — Sarah LeCroy">
+  <meta name="twitter:description" content="Staff Product Designer specializing in growth, onboarding, and activation. Currently at Intuit Mailchimp.">
+  <meta name="twitter:image" content="https://YOUR_DOMAIN/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="auth.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -188,7 +200,7 @@
       color: var(--ink);
       opacity: 0.92;
       letter-spacing: -0.01em;
-      max-width: 780px;
+      max-width: 830px;
       padding-left: 22px;
       border-left: 2.5px solid rgba(28,28,26,0.25);
       margin-bottom: 52px;
@@ -245,17 +257,18 @@
       margin-bottom: 16px;
     }
 
-    .role-block {
+    .role-inner {
       display: grid;
       grid-template-columns: 1fr auto;
       column-gap: 24px;
       align-items: start;
+      max-width: 860px;
     }
-    .role-block .intro-bio   { grid-column: 1 / -1; }
-    .role-block .employer-row { grid-column: 1; }
-    .role-block .btn-download { grid-column: 2; grid-row: 3; align-self: baseline; }
-    .role-block .role-meta   { grid-column: 1; }
-    .role-block .role-bullets { grid-column: 1 / -1; }
+    .role-inner .intro-bio   { grid-column: 1 / -1; }
+    .role-inner .employer-row { grid-column: 1; }
+    .role-inner .btn-download { grid-column: 2; grid-row: 3; align-self: baseline; }
+    .role-inner .role-meta   { grid-column: 1; }
+    .role-inner .role-bullets { grid-column: 1 / -1; }
 
     .btn-download {
       display: inline-flex;
@@ -537,7 +550,7 @@
 
     /* ─── Responsive ───────────────────────────────────────── */
     @media (max-width: 900px) {
-      .role-block       { grid-template-columns: 1fr; }
+      .role-inner       { grid-template-columns: 1fr; }
       .btn-download     { justify-self: start; }
       .credentials      { grid-template-columns: 1fr 1fr; }
       .awards-grid      { grid-template-columns: repeat(2, 1fr); }
@@ -560,8 +573,8 @@
       .awards-grid       { grid-template-columns: 1fr; }
       .credentials       { grid-template-columns: 1fr; }
       .status            { display: none; }
-      .role-block        { display: flex; flex-direction: column; }
-      .role-block .btn-download { order: -1; margin-bottom: 28px; }
+      .role-inner        { display: flex; flex-direction: column; max-width: 100%; }
+      .role-inner .btn-download { order: -1; margin-bottom: 28px; }
       .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 0 24px; }
       .site-footer-links { flex-direction: column; gap: 6px; }
       nav.nav-hidden { opacity: 0; transform: translateY(-100%); pointer-events: none; }
@@ -611,23 +624,25 @@
 
       <!-- ── Current role ── -->
       <div class="role-block">
-        <p class="intro-bio">Staff Product Designer specializing in growth, onboarding and activation, using experimentation, behavioral data, and AI-powered design to move metrics that matter. Leads cross-functional pods through ambiguity and translates experiment data into product strategy, not just screens.</p>
-        <div class="employer-row">
-          <h1 class="employer">Intuit Mailchimp</h1>
+        <div class="role-inner">
+          <p class="intro-bio">Staff Product Designer with deep experience in growth, onboarding and activation, using experimentation, behavioral data, and AI-powered design to move metrics that matter. Leads cross-functional pods through ambiguity and translates experiment data into product strategy, not just screens.</p>
+          <div class="employer-row">
+            <h1 class="employer">Intuit Mailchimp</h1>
+          </div>
+          <a href="images/SarahLeCroy_Resume.pdf" class="btn-download" onclick="event.preventDefault(); requireAuth(function(){ var a=document.createElement('a'); a.href='images/SarahLeCroy_Resume.pdf'; a.download='SarahLeCroy_Resume.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); });">
+            <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M7 1v8M7 9l-3-3M7 9l3-3M1 11.5h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Download resumé
+          </a>
+          <p class="role-meta">Staff Product Designer / Design Lead &nbsp; 2021 – 2025</p>
+          <ul class="role-bullets">
+            <li>Owned end-to-end design strategy for Mailchimp's account setup experience, serving ~60K new users per week and leading a cross-functional pod of 10+ (PM, engineering, data, design) through the full product lifecycle.</li>
+            <li>Designed as a scalable framework adopted across six platform teams that drove a 38% increase in domain authentications, 15% lift in list imports, and 37% increase in SMS adoption, directly improving activation and retention across the growth funnel.</li>
+            <li>Partnered with Intuit's GenAI team to design AI-powered autofill capabilities (website URL + industry detection) that achieved 61% AI acceptance and lifted paid conversion by 14.2%, and built cross-platform alignment with QuickBooks to scale personalization strategies across Intuit's ecosystem.</li>
+            <li>Used three years of experiment data and behavioral analytics (FullStory, A/B testing) to reframe leadership's approach to the 11-screen setup flow, shifting strategy from "cut screens" to "optimize what converts" and presenting recommendations to C-suite stakeholders.</li>
+          </ul>
         </div>
-        <a href="images/SarahLeCroy_Resume.pdf" class="btn-download" onclick="event.preventDefault(); requireAuth(function(){ var a=document.createElement('a'); a.href='images/SarahLeCroy_Resume.pdf'; a.download='SarahLeCroy_Resume.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); });">
-          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M7 1v8M7 9l-3-3M7 9l3-3M1 11.5h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Download resumé
-        </a>
-        <p class="role-meta">Staff Product Designer / Design Lead &nbsp; 2021 – 2025</p>
-        <ul class="role-bullets">
-          <li>Owned end-to-end design strategy for Mailchimp's account setup experience, serving ~60K new users per week and leading a cross-functional pod of 10+ (PM, engineering, data, design) through the full product lifecycle.</li>
-          <li>Designed a pattern for setup guidance that drove a 38% increase in domain authentications, 15% lift in list imports, and 37% increase in SMS adoption, directly improving activation and retention across the growth funnel.</li>
-          <li>Partnered with Intuit's GenAI team to design AI-powered autofill capabilities (website URL + industry detection) that achieved 61% AI acceptance and lifted paid conversion by 14.2%, and built cross-platform alignment with QuickBooks to scale personalization strategies across Intuit's ecosystem.</li>
-          <li>Used three years of experiment data and behavioral analytics (FullStory, A/B testing) to reframe leadership's approach to the 11-screen setup flow, shifting strategy from "cut screens" to "optimize what converts" and presenting recommendations to C-suite stakeholders.</li>
-        </ul>
       </div>
 
       <!-- ── Previous experience ── -->
@@ -656,7 +671,7 @@
       <div class="credentials">
         <div>
           <p class="cred-section-label">Tools</p>
-          <p class="tools-list">Figma, Claude Code, FullStory, usertesting.com, Jira, GitHub</p>
+          <p class="tools-list">Figma, Claude Code, Loveable, Cursor, FullStory, Jira, usertesting.com, GitHub</p>
         </div>
 
         <div>

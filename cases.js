@@ -27,8 +27,8 @@ const CASES = [
     image:    'images/coverimages/twofactor.webp',
     alt:      'Image preview for Two-Factor Authentication case study',
     subtitle: 'Intuit Mailchimp',
-    title:    'Modernizing Account Security at Scale',
-    href:     'account-security-2fa.html',
+    title:    'Rebuilding Account Security at Mailchimp',
+    href:     'rebuilding-account-security.html',
   },
 ];
 

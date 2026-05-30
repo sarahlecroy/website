@@ -12,7 +12,18 @@
     'ai-powered-setup.html',
     'scalable-setup-guidance.html',
     'account-setup-optimization.html',
+    'rebuilding-account-security.html',
   ];
+
+  // Run immediately (before body renders) to prevent any flash of content
+  // on guarded pages for unauthenticated users.
+  (function () {
+    const path = window.location.pathname;
+    if (GUARDED_PAGES.some(p => path.endsWith(p)) &&
+        sessionStorage.getItem(SESSION_KEY) !== '1') {
+      document.documentElement.style.visibility = 'hidden';
+    }
+  }());
 
   async function sha256(str) {
     const buf = await crypto.subtle.digest(
@@ -26,7 +37,8 @@
 
   // Build the modal. label = text shown above the input.
   // onSuccess = callback to run after correct password is entered.
-  function buildModal(label, buttonText, onSuccess) {
+  // onCancel = callback to run when the user cancels.
+  function buildModal(label, buttonText, onSuccess, onCancel) {
     const overlay = document.createElement('div');
     overlay.id = 'auth-overlay';
     overlay.innerHTML = `
@@ -43,6 +55,7 @@
           <button type="submit">${buttonText}</button>
         </form>
         <p id="auth-error" aria-live="polite"></p>
+        <a id="auth-cancel" href="#">Cancel</a>
       </div>
     `;
 
@@ -57,6 +70,7 @@
         justify-content: center;
         background: rgba(252, 243, 237, 0.96);
         backdrop-filter: blur(4px);
+        visibility: visible;
       }
       #auth-box {
         display: flex;
@@ -120,6 +134,19 @@
         min-height: 18px;
         opacity: 0.7;
       }
+      #auth-cancel {
+        font-family: 'Libre Franklin', sans-serif;
+        font-size: 13px;
+        font-weight: 300;
+        color: #1C1C1A;
+        opacity: 0.5;
+        text-decoration: underline;
+        letter-spacing: 0.02em;
+        margin-block: -8px;
+      }
+      #auth-cancel:hover {
+        opacity: 0.8;
+      }
     `;
 
     document.head.appendChild(style);
@@ -140,6 +167,16 @@
         document.getElementById('auth-input').focus();
       }
     });
+
+    document.getElementById('auth-cancel').addEventListener('click', function (e) {
+      e.preventDefault();
+      if (onCancel) {
+        onCancel();
+      } else {
+        overlay.remove();
+        style.remove();
+      }
+    });
   }
 
   function isAuthenticated() {
@@ -148,10 +185,18 @@
 
   // Full-page guard for case study pages
   function guardPage() {
-    if (isAuthenticated()) return;
+    if (isAuthenticated()) {
+      document.documentElement.style.visibility = '';
+      return;
+    }
     document.documentElement.style.overflow = 'hidden';
     buildModal('These case studies are password protected.', 'View case study', function () {
       document.documentElement.style.overflow = '';
+      document.documentElement.style.visibility = '';
+    }, function () {
+      // Navigate back without removing the overlay — page stays hidden until gone
+      document.documentElement.style.overflow = '';
+      history.back();
     });
   }
 
